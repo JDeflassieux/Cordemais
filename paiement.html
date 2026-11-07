@@ -41,7 +41,7 @@ input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid va
    <label style="display:flex;gap:10px;align-items:flex-start;margin-top:16px;color:var(--tx)"><input type="checkbox" required style="width:auto;margin-top:5px"> J’ai lu <a class="back" href="conditions.html" target="_blank">les conditions de location</a> (restitution, assurance, chef de bord, place visiteur) et je réserve pour les dates indiquées.</label>
    <button class="btn" id="payBtn" type="submit">Payer l’acompte</button>
   </form>
-  <div class="ok" id="ok"><b>✔ Acompte enregistré (démonstration).</b><br>Un e-mail de confirmation et le contrat vous seront envoyés. Le solde est dû 30 jours avant le départ.<br><br><a class="back" href="reservations.html">Voir le planning →</a></div>
+  <div class="ok" id="ok"><b>✔ Acompte enregistré (démonstration) : votre réservation est confirmée.</b><br>Un e-mail de confirmation et le contrat vous seront envoyés. Le solde est dû 30 jours avant le départ.<br><br><a class="back" href="reservations.html">Voir le planning →</a></div>
  </div>
  <div class="card">
   <h2>Votre séjour</h2>
@@ -65,5 +65,6 @@ else{
     +'<div class="row"><span>Total séjour</span><b>'+eur(bk.total)+'</b></div><div class="row total"><span>Acompte à régler</span><span>'+eur(dep)+'</span></div>';
   btn.textContent='Payer l’acompte de '+eur(dep);
 }
-document.getElementById('f').onsubmit=e=>{e.preventDefault();document.getElementById('f').style.display='none';document.getElementById('ok').style.display='block';window.scrollTo({top:0,behavior:'smooth'})};
+document.getElementById('f').onsubmit=e=>{e.preventDefault();
+  if(bk&&bk.key&&bk.id){try{const L=JSON.parse(localStorage.getItem(bk.key)||'[]');L.forEach(r=>{if(r[4]===bk.id)r[3]='paid'});localStorage.setItem(bk.key,JSON.stringify(L));bk.status='paid';localStorage.setItem('last-booking',JSON.stringify(bk))}catch(err){}}document.getElementById('f').style.display='none';document.getElementById('ok').style.display='block';window.scrollTo({top:0,behavior:'smooth'})};
 })();</script></body></html>
