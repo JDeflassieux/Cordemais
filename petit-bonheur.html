@@ -32,7 +32,7 @@ const store=()=>{try{localStorage.setItem(KEY,JSON.stringify(BOOKED.map(([x,y,p,
 
 const counts=r=>r[3]==='paid'&&!MINE.has(r[4]);   /* ce bateau : réservations confirmées, hors les miennes */
 const countsOther=r=>r[3]==='paid';                   /* l'autre bateau : toutes les réservations confirmées, y compris les miennes (louer les deux bateaux ensemble est encouragé) */
-const SEASON_END=num(2027,9,31),TODAY=Math.floor(Date.now()/D);
+const SEASON_END=num(2027,9,31),SEASON_START=num(2027,4,1),TODAY=Math.floor(Date.now()/D);
 /* Jours à tarif réduit (= passages de Guillaume, non nommés côté client) : toute arrivée ou tout retour déjà réservé, sur l'un ou l'autre bateau */
 const passage=n=>BOOKED.some(r=>counts(r)&&(n===r[0]||n===r[1]))||OTHER.some(r=>countsOther(r)&&(n===r[0]||n===r[1]));
 const passWho=n=>{const w=[];for(const r of BOOKED.filter(counts)){if(n===r[1])w.push('retour de '+NAMES[BOAT]);if(n===r[0])w.push('départ de '+NAMES[BOAT])}for(const r of OTHER.filter(countsOther)){if(n===r[1])w.push('retour de '+NAMES[BOAT==='m'?'p':'m']);if(n===r[0])w.push('départ de '+NAMES[BOAT==='m'?'p':'m'])}return w.join(' et ')};
@@ -89,6 +89,8 @@ function hints(a,b){
   for(const k of [-2,-1,1,2]){const n=b+k;if(!passage(n))continue;if(ok(a,n)&&!passage(b)){h.push('Rendez le bateau le '+fmt(n)+' au lieu du '+fmt(b)+' : −'+Math.round((passage(a)?DISC_BOTH:DISC_ONE)*100)+' % sur tout le séjour');break}}
   return h;
 }
+const canEnd=n=>{for(let x=n-MIN;x>=Math.max(SEASON_START,n-120);x--)if(ok(x,n))return true;return false};
+const usable=n=>arrOK(n)||canEnd(n);
 const names=['Mai','Juin','Juillet','Août','Septembre','Octobre'];
 document.getElementById('explain').innerHTML='<b>Comment ça marche ?</b> Choisissez librement vos dates ('+MIN_DAYS+' jours minimum). <b>Pleine saison</b> (juillet-août) '+eur(PRICE_HIGH)+' / jour, <b>hors saison</b> (mai, juin, septembre, octobre) '+eur(PRICE_LOW)+' / jour. Premier jour : remise des clés à 17 h, compté ⅓ de journée. Dernier jour : retour et état des lieux à 16 h, compté ⅔. Les <b>jours verts</b> sont à tarif réduit : −'+Math.round(DISC_ONE*100)+' % si votre départ <i>ou</i> votre retour tombe un jour vert, et '+Math.round((DISC_BOTH-DISC_ONE)*100)+' % de plus, soit −'+Math.round(DISC_BOTH*100)+' %, si les deux coïncident. Ils apparaissent au fil des réservations.'+(TODAY<parse(EARLY_DEADLINE)?' <b>Réservation anticipée :</b> −'+Math.round(DISC_EARLY*100)+' % jusqu’au '+fmt(parse(EARLY_DEADLINE))+'.':'');
 document.querySelectorAll('.minD').forEach(e=>e.textContent=MIN_DAYS);document.querySelectorAll('.dOne').forEach(e=>e.textContent=Math.round(DISC_ONE*100));
@@ -116,7 +118,7 @@ function render(){
         bt.title=dayTip(n);
         if(!en){if(!a&&!isStart(n)&&!isEnd(n)){bt.classList.add('short');bt.title='Libre ('+eur(dayPrice(n))+' / jour), mais moins de '+MIN_DAYS+' jours avant la réservation suivante : choisissez un départ plus tôt'}else bt.classList.add('lock')}
       }
-      if(passage(n)&&!(inside(n))){bt.classList.add('pass');bt.title=dayTip(n)+' · −'+Math.round(DISC_ONE*100)+' % sur tout le séjour si vous '+greenKind(n)+' le bateau ce jour-là'}
+      if(passage(n)&&!inside(n)&&usable(n)){bt.classList.add('pass');bt.title=dayTip(n)+' · −'+Math.round(DISC_ONE*100)+' % sur tout le séjour si vous '+greenKind(n)+' le bateau ce jour-là'}
       if(a&&b&&n>=a&&n<=Math.min(b,a+MIN))bt.classList.add('fix');
       if(a&&b&&n>a+MIN&&n<=b)bt.classList.add('ext');
       if(a&&!b){if(n>=a&&n<=a+MIN)bt.classList.add('bad');else if(en&&n>a+MIN&&ok(a,n))bt.classList.add('dep')}
