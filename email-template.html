@@ -1,0 +1,35 @@
+<!-- Gabarit à coller dans EmailJS (Email Templates → Content → Edit as HTML). Variables : {{subject}} {{status}} {{boat}} {{client}} {{name}} {{email}} {{phone}} {{exp}} {{start}} {{end}} {{days}} {{billed}} {{base}} {{discounts}} {{total}} {{deposit}} {{bareme}} {{link_planning}} {{link_boat}} ; destinataire : {{to_email}} -->
+<div style="margin:0;padding:28px 12px;background:#07131c;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#e6eef1">
+ <div style="max-width:620px;margin:auto;background:#0b1d29;border:1px solid #1d3645;border-radius:18px;overflow:hidden">
+  <div style="padding:22px 28px;border-bottom:1px solid #1d3645">
+   <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#19a39b;font-weight:800">Escapades Atlantique · réservation {{status}}</div>
+   <div style="font-family:Georgia,serif;font-size:30px;line-height:1.1;margin-top:6px;color:#fff">{{boat}}</div>
+  </div>
+  <div style="padding:22px 28px">
+   <table style="width:100%;border-collapse:collapse;font-size:15px">
+    <tr><td style="padding:10px 0;color:#9fb3bb;width:42%">Client</td><td style="padding:10px 0;font-weight:700">{{name}} <span style="color:#9fb3bb;font-weight:400">(client n° {{client}})</span></td></tr>
+    <tr><td style="padding:10px 0;color:#9fb3bb">Contact</td><td style="padding:10px 0">{{email}}<br>{{phone}}</td></tr>
+    <tr><td style="padding:10px 0;color:#9fb3bb">Expérience</td><td style="padding:10px 0">{{exp}}</td></tr>
+   </table>
+   <div style="margin:16px 0;padding:16px 18px;background:#102736;border:1px solid #1d3645;border-left:6px solid #ffd166;border-radius:14px">
+    <table style="width:100%;border-collapse:collapse;font-size:15px">
+     <tr><td style="color:#9fb3bb;padding:4px 0">Remise des clés</td><td style="text-align:right;padding:4px 0"><b style="color:#ffd166;font-size:17px">{{start}}</b> à 17 h</td></tr>
+     <tr><td style="color:#9fb3bb;padding:4px 0">Retour et état des lieux</td><td style="text-align:right;padding:4px 0"><b style="color:#ffd166;font-size:17px">{{end}}</b> à 16 h</td></tr>
+     <tr><td style="color:#9fb3bb;padding:4px 0">Durée</td><td style="text-align:right;padding:4px 0">{{days}} jours calendaires · {{billed}} facturés</td></tr>
+    </table>
+   </div>
+   <table style="width:100%;border-collapse:collapse;font-size:15px">
+    <tr><td style="padding:8px 0;border-bottom:1px dashed #1d3645;color:#9fb3bb">Prix de base</td><td style="padding:8px 0;border-bottom:1px dashed #1d3645;text-align:right">{{base}}</td></tr>
+    <tr><td style="padding:8px 0;border-bottom:1px dashed #1d3645;color:#7fd6cf">Remises</td><td style="padding:8px 0;border-bottom:1px dashed #1d3645;text-align:right;color:#7fd6cf">{{discounts}}</td></tr>
+    <tr><td style="padding:10px 0;font-weight:800;font-size:18px">Total du séjour</td><td style="padding:10px 0;text-align:right;font-weight:800;font-size:18px;color:#ffd166">{{total}}</td></tr>
+    <tr><td style="padding:6px 0;color:#9fb3bb">Acompte (30 %)</td><td style="padding:6px 0;text-align:right">{{deposit}}</td></tr>
+   </table>
+   <div style="margin-top:14px;font-size:12px;color:#9fb3bb;background:#0c2130;border-left:3px solid #19a39b;padding:8px 12px;border-radius:8px">Barème appliqué : {{bareme}}</div>
+   <div style="margin-top:22px;text-align:center">
+    <a href="{{link_planning}}" style="display:inline-block;padding:12px 22px;border-radius:99px;background:#e86f51;color:#fff;text-decoration:none;font-weight:800">Ouvrir le planning des deux bateaux →</a>
+    <div style="margin-top:10px"><a href="{{link_boat}}" style="color:#7fd6cf;text-decoration:none;font-size:13px">Voir la fiche {{boat}}</a></div>
+   </div>
+  </div>
+  <div style="padding:14px 28px;border-top:1px solid #1d3645;font-size:11px;color:#6f858d">Message automatique du site Escapades Atlantique. Les dates et montants reprennent exactement ceux enregistrés dans le calendrier.</div>
+ </div>
+</div>

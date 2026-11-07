@@ -22,7 +22,7 @@ input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid va
 .ok{display:none;background:#0f3038;border-left:4px solid var(--teal);padding:18px;border-radius:12px;margin-top:20px}
 .empty{color:var(--mut)}
 @media(max-width:760px){.cols{grid-template-columns:1fr}body{padding-top:96px}nav{flex-wrap:wrap;gap:6px 14px;padding:10px 4vw}.links{width:100%;overflow-x:auto;white-space:nowrap;scrollbar-width:none}.links a{font-size:.9rem;flex:none}}
-@media(max-width:760px){.wrap{padding:24px 4vw 60px}.card{padding:16px}.two{grid-template-columns:1fr}input,select{font-size:16px}}</style></head><body>
+@media(max-width:760px){.wrap{padding:24px 4vw 60px}.card{padding:16px}.two{grid-template-columns:1fr}input,select{font-size:16px}}</style><script src="params.js"></script></head><body>
 <nav><a href="index.html">ESCAPADES ATLANTIQUE</a><div class="links"><a href="dehler.html">Maïtika</a><a href="petit-bonheur.html">Petit Bonheur</a><a href="reservations.html">Planning</a></div></nav>
 <div class="wrap">
 <div class="ey">Réservation</div><h1>Paiement de l’acompte</h1>
@@ -60,11 +60,13 @@ if(!bk){sum.innerHTML='<p class="empty">Aucune réservation en cours. Choisissez
 else{
   const pageOf={'Maïtika':'dehler.html','Petit Bonheur':'petit-bonheur.html'};back.href=(pageOf[bk.boat]||'index.html')+'#dates';
   const dep=bk.total*DEPOSIT;
-  sum.innerHTML='<div class="row"><span>Bateau</span><b>'+bk.boat+'</b></div><div class="row"><span>Du</span><b>'+fmt(bk.start)+' (16 h)</b></div><div class="row"><span>Au</span><b>'+fmt(bk.end)+' (10 h)</b></div>'
-    +'<div class="row"><span>'+bk.days+' jours</span><span>'+eur(bk.base)+'</span></div>'+(bk.disc?'<div class="row disc"><span>Tarif réduit −'+Math.round(bk.disc*100)+' %</span><span>−'+eur(bk.base*bk.disc)+'</span></div>':'')
+  sum.innerHTML='<div class="row"><span>Bateau</span><b>'+bk.boat+'</b></div><div class="row"><span>Du</span><b>'+fmt(bk.start)+' (remise des clés 17 h)</b></div><div class="row"><span>Au</span><b>'+fmt(bk.end)+' (état des lieux 16 h)</b></div>'
+    +'<div class="row"><span>'+bk.days+' jours (1er jour ⅓, dernier ⅔)</span><span>'+eur(bk.base)+'</span></div>'+(bk.disc?'<div class="row disc"><span>Remises −'+Math.round(bk.disc*100)+' %</span><span>−'+eur(bk.base*bk.disc)+'</span></div>':'')
     +'<div class="row"><span>Total séjour</span><b>'+eur(bk.total)+'</b></div><div class="row total"><span>Acompte à régler</span><span>'+eur(dep)+'</span></div>';
   btn.textContent='Payer l’acompte de '+eur(dep);
 }
 document.getElementById('f').onsubmit=e=>{e.preventDefault();
+  if(bk&&window.notifyBooking){const F=new FormData(document.getElementById('f'));let sn=null;try{const L=JSON.parse(localStorage.getItem(bk.key)||'[]');const r=L.find(x=>x[4]===bk.id);sn=r&&r[6]}catch(err){}
+    window.notifyBooking({status:'confirmée (acompte payé)',boat:bk.boat,client:(sn&&sn.client)||'',name:(F.get('prenom')||'')+' '+(F.get('nom')||''),email:F.get('email')||'',phone:F.get('tel')||'',exp:F.get('exp')||'',start:fmt(bk.start),end:fmt(bk.end),days:bk.days,billed:'',base:eur(bk.base),discounts:bk.disc?'−'+Math.round(bk.disc*100)+' % = −'+eur(bk.base*bk.disc):'aucune',total:eur(bk.total),deposit:eur(bk.total*DEPOSIT),bareme:sn?'HS '+eur(sn.lo)+' · PS '+eur(sn.hi)+' · '+(sn.items||[]).map(([n,v])=>n+' −'+v+' %').join(', '):'—'}).catch(()=>{});}
   if(bk&&bk.key&&bk.id){try{const L=JSON.parse(localStorage.getItem(bk.key)||'[]');L.forEach(r=>{if(r[4]===bk.id)r[3]='paid'});localStorage.setItem(bk.key,JSON.stringify(L));bk.status='paid';localStorage.setItem('last-booking',JSON.stringify(bk))}catch(err){}}document.getElementById('f').style.display='none';document.getElementById('ok').style.display='block';window.scrollTo({top:0,behavior:'smooth'})};
 })();</script></body></html>

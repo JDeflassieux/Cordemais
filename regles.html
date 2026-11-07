@@ -1,0 +1,84 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Règles de tarification · Escapades Atlantique</title>
+<style>
+*{box-sizing:border-box}:root{--bg:#07131c;--bg2:#0b1d29;--bg3:#102736;--line:#1d3645;--tx:#e6eef1;--mut:#9fb3bb;--teal:#19a39b;--cor:#e86f51;--gold:#ffd166}
+html{font-size:clamp(15px,1.05vw,19px)}body{margin:0;font:1rem/1.6 system-ui;color:var(--tx);background:var(--bg);padding-top:62px}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:#07131cf0;padding:12px 6vw;display:flex;gap:20px;justify-content:space-between;border-bottom:1px solid var(--line)}
+nav a{text-decoration:none;color:var(--tx);font-weight:800}.links{display:flex;gap:18px}
+.wrap{max-width:1180px;margin:auto;padding:40px 6vw 80px}
+.ey{text-transform:uppercase;letter-spacing:.18em;font-size:.75rem;font-weight:850;color:var(--teal)}
+h1{font:clamp(1.9rem,4.5vw,3rem)/1.05 Georgia;margin:.2em 0 .3em}.sub{color:var(--mut);max-width:860px}
+h2{font:1.5rem Georgia;color:var(--gold);margin:40px 0 12px}
+table{width:100%;border-collapse:collapse;background:var(--bg3);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+th,td{padding:11px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#0c2130;color:var(--mut);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em}
+td:first-child{font-weight:800;white-space:nowrap}td.v{color:var(--gold);font-weight:800;white-space:nowrap}
+.ex{color:var(--mut);font-size:.9rem}.tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:.72rem;font-weight:800;margin-right:6px}
+.tag.c{background:#0f3038;color:#7fd6cf}.tag.g{background:#2a1c16;color:#ffb39d}.tag.t{background:#2a2410;color:#f1e3b4}
+.note{background:#0f3038;border-left:4px solid var(--teal);padding:12px 16px;border-radius:10px;margin:14px 0}
+.back{color:#7fd6cf;text-decoration:none;font-weight:800;border:1px solid #19a39b66;padding:9px 18px;border-radius:99px}
+@media(max-width:760px){table,thead,tbody,tr,td,th{display:block}thead{display:none}td{border:0;padding:4px 12px}tr{border-bottom:1px solid var(--line);padding:8px 0}td:first-child{padding-top:10px}}
+</style><script src="params.js"></script></head><body>
+<nav><a href="reservations.html">← Planning</a><div class="links"><a href="dehler.html">Maïtika</a><a href="petit-bonheur.html">Petit Bonheur</a><a href="#" style="color:#7fd6cf">Règles</a></div></nav>
+<div class="wrap">
+<div class="ey">Document interne</div><h1>Règles de tarification et de rémunération</h1>
+<p class="sub">Résumé de toute la logique codée dans le site : prix affichés aux clients, remises, contraintes du calendrier, part de Guillaume et coûts de convoyage. <span class="tag c">Client</span> = visible par le client. <span class="tag g">Guillaume</span> = calcul interne du planning. <span class="tag t">Test</span> = outils de simulation, à retirer avant la mise en ligne.</p>
+
+<h2>1 · Prix de base</h2>
+<table><thead><tr><th>Règle</th><th>Valeur</th><th>Détail</th></tr></thead><tbody>
+<tr><td>Pleine saison</td><td class="v">Maïtika <span data-p="PRICE_M_HIGH" data-f="eur"></span> / j · Petit Bonheur <span data-p="PRICE_P_HIGH" data-f="eur"></span> / j</td><td>Juillet et août.</td></tr>
+<tr><td>Hors saison</td><td class="v">Maïtika <span data-p="PRICE_M_LOW" data-f="eur"></span> / j · Petit Bonheur <span data-p="PRICE_P_LOW" data-f="eur"></span> / j</td><td>Mai, juin, septembre, octobre (≈ −20 %). Un séjour à cheval est facturé jour par jour selon sa saison.</td></tr>
+<tr><td>Jour de remise des clés</td><td class="v">⅓ de journée</td><td>Remise des clés à 17 h le premier jour.</td></tr>
+<tr><td>Jour du retour</td><td class="v">⅔ de journée</td><td>Retour et état des lieux de sortie à 16 h le dernier jour. <span class="ex">Exemple : 5 jours calendaires = 4 jours facturés.</span></td></tr>
+<tr><td>Durée minimale</td><td class="v">Maïtika <span data-p="MIN_M"></span> jours · Petit Bonheur <span data-p="MIN_P"></span> jours</td><td>Jours calendaires, départ et retour compris.</td></tr>
+<tr><td>Horaires</td><td class="v">17 h / 16 h</td><td>Le même jour, le client sortant rend à 16 h et le suivant prend à 17 h : les enchaînements le jour même sont possibles.</td></tr>
+</tbody></table>
+
+<h2>2 · Remises visibles par le client <span class="tag c">Client</span></h2>
+<table><thead><tr><th>Remise</th><th>Taux</th><th>Condition</th></tr></thead><tbody>
+<tr><td>Jour à tarif réduit (vert)</td><td class="v">−<span data-p="DISC_ONE"></span> %</td><td>Le départ <i>ou</i> le retour tombe un jour où Guillaume est déjà à Pornichet : arrivée ou retour d'une réservation <b>confirmée</b> (acompte payé), sur l'un ou l'autre bateau. La remise porte sur tout le séjour.</td></tr>
+<tr><td>Deux jours verts</td><td class="v">−<span data-p="DISC_BOTH"></span> %</td><td>Le départ <i>et</i> le retour tombent des jours verts.</td></tr>
+<tr><td>Réservation anticipée</td><td class="v">−<span data-p="DISC_EARLY"></span> %</td><td>Réservation faite avant le <span data-p="EARLY_DEADLINE" data-f="date"></span>. Cumulable avec les jours verts.</td></tr>
+<tr><td>Dernière minute</td><td class="v">−<span data-p="DISC_LAST"></span> %</td><td>Réservation à moins de <span data-p="LAST_DAYS"></span> jours du départ, <b>uniquement</b> si le séjour tombe dans une période où le bateau est déjà à Pornichet (entre la première arrivée et le dernier retour confirmés). Objectif : remplir les trous, pas créer un convoyage.</td></tr>
+<tr><td>Suggestion</td><td class="v">—</td><td>Si le départ ou le retour choisi est à 1 ou 2 jours d'un jour vert, la barre de prix propose de décaler : « Partez le 14 au lieu du 15 : −10 % ».</td></tr>
+</tbody></table>
+<div class="note">Les jours verts n'apparaissent qu'après <b>paiement</b> de la réservation qui les crée. Un client ne voit jamais les jours verts créés par sa propre réservation sur le même bateau ; il les voit sur l'autre bateau (louer les deux ensemble est encouragé).</div>
+
+<h2>3 · Contraintes du calendrier <span class="tag c">Client</span></h2>
+<table><thead><tr><th>Situation</th><th>Affichage</th><th>Règle</th></tr></thead><tbody>
+<tr><td>Réservation confirmée</td><td class="v">Orange plein</td><td>Bloquée. Ses jours d'extrémité restent utilisables comme retour (avant) ou départ (après) par un autre client.</td></tr>
+<tr><td>Réservation en attente</td><td class="v">Orange hachuré</td><td>Période validée mais acompte non payé : bloquée pour les autres, ne crée pas de jour vert. <span class="ex">À libérer automatiquement après un délai en production (à définir).</span></td></tr>
+<tr><td>Ma période</td><td class="v">Sarcelle hachuré</td><td>La période en attente du client courant : cliquable pour la modifier ; « Annuler mes dates » au-dessus de la carte la supprime.</td></tr>
+<tr><td>Libre mais trop court</td><td class="v">Pointillé gris</td><td>Jour libre, mais moins de la durée minimale avant la réservation suivante : choisir une arrivée plus tôt.</td></tr>
+<tr><td>Infobulle</td><td class="v">Prix du jour</td><td>Chaque case affiche son prix au survol, avec la fraction ⅓ ou ⅔ pour les jours d'extrémité.</td></tr>
+</tbody></table>
+
+<h2>4 · Rémunération de Guillaume sur Maïtika <span class="tag g">Guillaume</span></h2>
+<table><thead><tr><th>Poste</th><th>Montant</th><th>Règle</th></tr></thead><tbody>
+<tr><td>Convoyage</td><td class="v"><span data-p="CONVOY_FEE" data-f="eur"></span> l'un</td><td>Aller avant la première location, retour après la dernière. Pas de location : pas de convoyage. Un retour + un aller de plus autour de chaque trou supérieur au seuil (le bateau rentre à Cordemais).</td></tr>
+<tr><td>Tracteur</td><td class="v"><span data-p="TRACTOR" data-f="eur"></span> l'aller-retour</td><td>Sortie et remise à l'eau à Cordemais, compté dans le coût d'un retour.</td></tr>
+<tr><td>Remise des clés</td><td class="v"><span data-p="KEY_FEE" data-f="eur"></span> forfait</td><td>Premier jour, 17 h.</td></tr>
+<tr><td>État des lieux</td><td class="v"><span data-p="PCT_RET"></span> % du prix de la location</td><td>Dernier jour, 16 h. Pénibilité liée à la durée, donc au prix.</td></tr>
+<tr><td>Déplacement depuis Cordemais</td><td class="v"><span data-p="TRAVEL" data-f="eur"></span> par jour</td><td>Seulement les jours où Guillaume vient <b>uniquement</b> pour Maïtika (aucun départ ni retour de Petit Bonheur ce jour-là). Compté une fois par jour, même si départ et retour de Maïtika coïncident. <span class="ex">Hypothèse : 100 km A/R à 0,50 € + 1 h 30 à 25 €/h.</span></td></tr>
+<tr><td>Petit Bonheur</td><td class="v">100 % Guillaume</td><td>Il en est propriétaire : ses locations n'entrent pas dans le bilan.</td></tr>
+</tbody></table>
+
+<h2>5 · Port de Pornichet et seuil de retour <span class="tag g">Guillaume</span></h2>
+<table><thead><tr><th>Règle</th><th>Valeur</th><th>Détail</th></tr></thead><tbody>
+<tr><td>Nuit de port sans location</td><td class="v"><span data-p="NIGHT" data-f="eur"></span> (estimation)</td><td>Comptée entre deux locations. Pendant une location, le port est à la charge du locataire.</td></tr>
+<tr><td>Coût d'un retour à Cordemais</td><td class="v">2 × <span data-p="CONVOY_FEE" data-f="eur"></span> + <span data-p="TRACTOR" data-f="eur"></span> = <span data-p="CONVOY_RETURN" data-f="eur"></span></td><td>Deux convoyages + tracteur.</td></tr>
+<tr><td>Seuil « rentrer à Cordemais »</td><td class="v"><span data-p="CONVOY_RETURN"></span> / <span data-p="NIGHT"></span> = <span data-p="GAP"></span> nuits</td><td>En dessous, laisser le bateau à Pornichet coûte moins cher. Le bilan signale les trous au-delà du seuil. Automatique, ou fixé à la main dans les réglages.</td></tr>
+<tr><td>Location hors saison isolée</td><td class="v">⚠ avertissement</td><td>Aucune autre location à moins du seuil avant ou après, hors juillet-août : elle justifie à elle seule un aller-retour de convoyage. Signalée à Guillaume, aucun supplément pour le client.</td></tr>
+<tr><td>Barème figé</td><td class="v">à la réservation</td><td>Chaque réservation enregistre les prix, remises et conditions de Guillaume du jour. Un changement de réglage ne s'applique qu'aux réservations suivantes ; convoyages et port sont comptés aux tarifs actuels.</td></tr>
+<tr><td>Part de Julien</td><td class="v">= locations − Guillaume − port</td><td>Calcul affiché en clair en bas du bilan.</td></tr>
+</tbody></table>
+
+<h2>6 · Outils de test <span class="tag t">Test</span></h2>
+<table><thead><tr><th>Outil</th><th>Où</th><th>Rôle</th></tr></thead><tbody>
+<tr><td>Client 1 à 10</td><td>Bas des fiches bateaux</td><td>Changer d'identité : la page devient ce que verrait ce client (ses périodes, les jours verts qui le concernent). Le choix vaut pour les deux bateaux.</td></tr>
+<tr><td>Confirmer sans payer</td><td>Liste des réservations, sous le calendrier</td><td>Passe une période en attente à « confirmée » sans passer par la page de paiement.</td></tr>
+<tr><td>Effacer les réservations de test</td><td>Sous le calendrier / page planning</td><td>Remet le calendrier à zéro (un bateau, ou les deux depuis le planning).</td></tr>
+<tr><td>Réglages du bilan</td><td>Bas de la page planning</td><td>Tous les montants ci-dessus sont modifiables ; les bilans se recalculent.</td></tr>
+<tr><td>Page de paiement</td><td>paiement.html</td><td>Factice : aucun paiement réel, confirme la réservation au clic.</td></tr>
+</tbody></table>
+<div class="note">Les réservations sont enregistrées dans le navigateur (mode prototype). Pour la mise en ligne, elles passeront dans une base partagée, et les outils de test seront retirés.</div>
+<p style="margin-top:30px"><a class="back" href="reservations.html">← Retour au planning</a></p>
+</div><script>(()=>{const P=window.PARAMS,e=v=>Math.round(v).toLocaleString('fr-FR')+' €';document.querySelectorAll('[data-p]').forEach(x=>{const v=P[x.dataset.p];x.textContent=x.dataset.f==='eur'?e(v):x.dataset.f==='date'?new Date(v).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):v})})();</script></body></html>
