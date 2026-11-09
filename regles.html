@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Règles de tarification · Escapades Atlantique</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Règles de tarification · Escapades Atlantique</title>
 <style>
 *{box-sizing:border-box}:root{--bg:#07131c;--bg2:#0b1d29;--bg3:#102736;--line:#1d3645;--tx:#e6eef1;--mut:#9fb3bb;--teal:#19a39b;--cor:#e86f51;--gold:#ffd166}
 html{font-size:clamp(15px,1.05vw,19px)}body{margin:0;font:1rem/1.6 system-ui;color:var(--tx);background:var(--bg);padding-top:62px}
@@ -16,8 +16,8 @@ td:first-child{font-weight:800;white-space:nowrap}td.v{color:var(--gold);font-we
 .note{background:#0f3038;border-left:4px solid var(--teal);padding:12px 16px;border-radius:10px;margin:14px 0}
 .back{color:#7fd6cf;text-decoration:none;font-weight:800;border:1px solid #19a39b66;padding:9px 18px;border-radius:99px}
 @media(max-width:760px){table,thead,tbody,tr,td,th{display:block}thead{display:none}td{border:0;padding:4px 12px}tr{border-bottom:1px solid var(--line);padding:8px 0}td:first-child{padding-top:10px}}
-</style><script src="params.js"></script></head><body>
-<nav><a href="reservations.html">← Planning</a><div class="links"><a href="dehler.html">Maïtika</a><a href="petit-bonheur.html">Petit Bonheur</a><a href="#" style="color:#7fd6cf">Règles</a></div></nav>
+.navLogo{display:flex;align-items:center;margin-right:6px}.navLogo img{height:34px;width:auto;filter:drop-shadow(0 2px 6px #0008)}@media(max-width:760px){.navLogo img{height:28px}}</style><script src="params.js"></script><script>if(!window.PARAMS){document.addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#e86f51;color:#fff;padding:12px 16px;font:700 15px system-ui;text-align:center';b.textContent='Fichier params.js introuvable à côté de cette page : les prix, remises et calendriers ne peuvent pas s’afficher. Vérifiez que params.js (et non params.js.txt) est bien dans le même dossier que les pages.';document.body.appendChild(b)})}</script></head><body>
+<nav><a href="index.html" class="navLogo" aria-label="Escapades Atlantique"><img src="logo-escapade-embleme.png" alt=""></a><a href="reservations.html">← Planning</a><div class="links"><a href="dehler.html#dates">Maïtika</a><a href="petit-bonheur.html#dates">Petit Bonheur</a><a href="#" style="color:#7fd6cf">Règles</a></div></nav>
 <div class="wrap">
 <div class="ey">Document interne</div><h1>Règles de tarification et de rémunération</h1>
 <p class="sub">Résumé de toute la logique codée dans le site : prix affichés aux clients, remises, contraintes du calendrier, part de Guillaume et coûts de convoyage. <span class="tag c">Client</span> = visible par le client. <span class="tag g">Guillaume</span> = calcul interne du planning. <span class="tag t">Test</span> = outils de simulation, à retirer avant la mise en ligne.</p>
@@ -48,6 +48,7 @@ td:first-child{font-weight:800;white-space:nowrap}td.v{color:var(--gold);font-we
 <tr><td>Réservation en attente</td><td class="v">Orange hachuré</td><td>Période validée mais acompte non payé : bloquée pour les autres, ne crée pas de jour vert. <span class="ex">À libérer automatiquement après un délai en production (à définir).</span></td></tr>
 <tr><td>Ma période</td><td class="v">Sarcelle hachuré</td><td>La période en attente du client courant : cliquable pour la modifier ; « Annuler mes dates » au-dessus de la carte la supprime.</td></tr>
 <tr><td>Libre mais trop court</td><td class="v">Pointillé gris</td><td>Jour libre, mais moins de la durée minimale avant la réservation suivante : choisir une arrivée plus tôt.</td></tr>
+<tr><td>Annulation</td><td class="v">gratuite ≥ <span data-p="CANCEL_FREE_DAYS"></span> j · <span data-p="CANCEL_MID_PCT"></span> % ensuite · <span data-p="CANCEL_LATE_PCT"></span> % ≤ <span data-p="CANCEL_LATE_DAYS"></span> j</td><td>Bouton « Annuler » en face du séjour, sous le calendrier. Si le bateau a déjà été convoyé pour cette seule location, le coût réel du convoyage est dû s’il dépasse les frais.</td></tr>
 <tr><td>Infobulle</td><td class="v">Prix du jour</td><td>Chaque case affiche son prix au survol, avec la fraction ⅓ ou ⅔ pour les jours d'extrémité.</td></tr>
 </tbody></table>
 

@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Acompte · Escapades Atlantique</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Acompte · Escapades Atlantique</title>
 <style>
 *{box-sizing:border-box}:root{--bg:#07131c;--bg2:#0b1d29;--bg3:#102736;--line:#1d3645;--tx:#e6eef1;--mut:#9fb3bb;--teal:#19a39b;--cor:#e86f51;--gold:#ffd166}
 body{margin:0;font:16px/1.6 system-ui;color:var(--tx);background:var(--bg);padding-top:62px}
@@ -22,8 +22,8 @@ input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid va
 .ok{display:none;background:#0f3038;border-left:4px solid var(--teal);padding:18px;border-radius:12px;margin-top:20px}
 .empty{color:var(--mut)}
 @media(max-width:760px){.cols{grid-template-columns:1fr}body{padding-top:96px}nav{flex-wrap:wrap;gap:6px 14px;padding:10px 4vw}.links{width:100%;overflow-x:auto;white-space:nowrap;scrollbar-width:none}.links a{font-size:.9rem;flex:none}}
-@media(max-width:760px){.wrap{padding:24px 4vw 60px}.card{padding:16px}.two{grid-template-columns:1fr}input,select{font-size:16px}}</style><script src="params.js"></script></head><body>
-<nav><a href="index.html">ESCAPADES ATLANTIQUE</a><div class="links"><a href="dehler.html">Maïtika</a><a href="petit-bonheur.html">Petit Bonheur</a><a href="reservations.html">Planning</a></div></nav>
+@media(max-width:760px){.wrap{padding:24px 4vw 60px}.card{padding:16px}.two{grid-template-columns:1fr}input,select{font-size:16px}}.navLogo{display:flex;align-items:center;margin-right:6px}.navLogo img{height:34px;width:auto;filter:drop-shadow(0 2px 6px #0008)}@media(max-width:760px){.navLogo img{height:28px}}</style><script src="params.js"></script><script>if(!window.PARAMS){document.addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#e86f51;color:#fff;padding:12px 16px;font:700 15px system-ui;text-align:center';b.textContent='Fichier params.js introuvable à côté de cette page : les prix, remises et calendriers ne peuvent pas s’afficher. Vérifiez que params.js (et non params.js.txt) est bien dans le même dossier que les pages.';document.body.appendChild(b)})}</script></head><body>
+<nav><a href="index.html" class="navLogo" aria-label="Escapades Atlantique"><img src="logo-escapade-embleme.png" alt=""></a><a href="index.html">ESCAPADES ATLANTIQUE</a><div class="links"><a href="dehler.html">Maïtika</a><a href="petit-bonheur.html">Petit Bonheur</a><a href="reservations.html">Planning</a></div></nav>
 <div class="wrap">
 <div class="ey">Réservation</div><h1>Paiement de l’acompte</h1>
 <div class="demo"><b>Page de démonstration.</b> Aucun paiement n’est effectué : ce formulaire sert à valider le parcours. Le paiement réel passera par un prestataire sécurisé (Stripe, SumUp…).</div>
@@ -39,7 +39,7 @@ input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid va
    <label>Numéro de carte</label><input inputmode="numeric" placeholder="4242 4242 4242 4242" name="cb">
    <div class="two"><div><label>Expiration</label><input placeholder="MM/AA" name="exp2"></div><div><label>CVC</label><input placeholder="123" name="cvc"></div></div>
    <label style="display:flex;gap:10px;align-items:flex-start;margin-top:16px;color:var(--tx)"><input type="checkbox" required style="width:auto;margin-top:5px"> J’ai lu <a class="back" href="conditions.html" target="_blank">les conditions de location</a> (restitution, assurance, chef de bord, place visiteur) et je réserve pour les dates indiquées.</label>
-   <button class="btn" id="payBtn" type="submit">Payer l’acompte</button>
+   <button class="btn" id="payBtn" type="submit">Payer l’acompte</button> <button class="linkbtn test" id="payTest" type="button" style="margin-left:10px;border:1px solid #ffd16688;border-radius:99px;padding:8px 14px;background:transparent;color:#ffd166;font:700 .85rem system-ui;cursor:pointer">Confirmer sans payer (test)</button>
   </form>
   <div class="ok" id="ok"><b>✔ Acompte enregistré (démonstration) : votre réservation est confirmée.</b><br>Un e-mail de confirmation et le contrat vous seront envoyés. Le solde est dû 30 jours avant le départ.<br><br><a class="back" href="reservations.html">Voir le planning →</a></div>
  </div>
@@ -65,8 +65,11 @@ else{
     +'<div class="row"><span>Total séjour</span><b>'+eur(bk.total)+'</b></div><div class="row total"><span>Acompte à régler</span><span>'+eur(dep)+'</span></div>';
   btn.textContent='Payer l’acompte de '+eur(dep);
 }
+document.getElementById('payTest').onclick=()=>{const f=document.getElementById('f');if(!f.reportValidity())return;f.dispatchEvent(new Event('submit',{cancelable:true}))};
 document.getElementById('f').onsubmit=e=>{e.preventDefault();
+  if(bk&&window.audit){const F=new FormData(document.getElementById('f'));window.audit('paid',{key:bk.key,id:bk.id,boat:bk.boat,start:bk.start,end:bk.end,total:bk.total,deposit:Math.round(bk.total*0.30),name:((F.get('prenom')||'')+' '+(F.get('nom')||'')).trim(),email:F.get('email')||''})}
+  if(bk){const F=new FormData(document.getElementById('f'));try{const L=JSON.parse(localStorage.getItem(bk.key)||'[]');const r=L.find(x=>x[4]===bk.id);if(r){r[7]={name:((F.get('prenom')||'')+' '+(F.get('nom')||'')).trim(),email:F.get('email')||'',phone:F.get('tel')||'',exp:F.get('exp')||'',paidAt:new Date().toISOString().slice(0,10)};localStorage.setItem(bk.key,JSON.stringify(L))}}catch(e){}}
   if(bk&&window.notifyBooking){const F=new FormData(document.getElementById('f'));let sn=null;try{const L=JSON.parse(localStorage.getItem(bk.key)||'[]');const r=L.find(x=>x[4]===bk.id);sn=r&&r[6]}catch(err){}
     window.notifyBooking({status:'confirmée (acompte payé)',boat:bk.boat,client:(sn&&sn.client)||'',name:(F.get('prenom')||'')+' '+(F.get('nom')||''),email:F.get('email')||'',phone:F.get('tel')||'',exp:F.get('exp')||'',start:fmt(bk.start),end:fmt(bk.end),days:bk.days,billed:'',base:eur(bk.base),discounts:bk.disc?'−'+Math.round(bk.disc*100)+' % = −'+eur(bk.base*bk.disc):'aucune',total:eur(bk.total),deposit:eur(bk.total*DEPOSIT),bareme:sn?'HS '+eur(sn.lo)+' · PS '+eur(sn.hi)+' · '+(sn.items||[]).map(([n,v])=>n+' −'+v+' %').join(', '):'—'}).catch(()=>{});}
-  if(bk&&bk.key&&bk.id){try{const L=JSON.parse(localStorage.getItem(bk.key)||'[]');L.forEach(r=>{if(r[4]===bk.id)r[3]='paid'});localStorage.setItem(bk.key,JSON.stringify(L));bk.status='paid';localStorage.setItem('last-booking',JSON.stringify(bk))}catch(err){}}document.getElementById('f').style.display='none';document.getElementById('ok').style.display='block';window.scrollTo({top:0,behavior:'smooth'})};
+  if(bk&&bk.key&&bk.id){try{const L=JSON.parse(localStorage.getItem(bk.key)||'[]');L.forEach(r=>{if(r[4]===bk.id)r[3]='paid'});localStorage.setItem(bk.key,JSON.stringify(L));bk.status='paid';localStorage.setItem('last-booking',JSON.stringify(bk))}catch(err){}}document.getElementById('f').style.display='none';document.getElementById('ok').style.display='block';(()=>{const o=document.getElementById('ok');if(o&&bk&&!o.querySelector('.contratLink')){const a=document.createElement('a');a.className='btn contratLink';a.href='contrat.html?key='+encodeURIComponent(bk.key)+'&id='+encodeURIComponent(bk.id);a.textContent='📄 Voir et signer le contrat de location';a.style.cssText='display:inline-block;margin-top:14px';o.appendChild(a)}})();window.scrollTo({top:0,behavior:'smooth'})};
 })();</script></body></html>

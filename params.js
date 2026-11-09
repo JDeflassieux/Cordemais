@@ -16,7 +16,14 @@ window.ESCAPADES_DEFAULTS = {
   EARLY_DEADLINE: '2027-04-15', LAST_DAYS: 7,
   /* Rémunération de Guillaume et coûts */
   CONVOY_FEE: 300, TRACTOR: 100, KEY_FEE: 50, PCT_RET: 10, TRAVEL: 90,
-  NIGHT: 35, LONG_GAP: 0,                   /* LONG_GAP 0 = seuil automatique */
+  NIGHT: 38, LONG_GAP: 0,                   /* nuit de port à Pornichet, gabarit 10 m (fiche 2026) ; LONG_GAP 0 = seuil automatique */
+  /* Annulation par le client */
+  CANCEL_FREE_DAYS: 30, CANCEL_LATE_DAYS: 7, CANCEL_MID_PCT: 30, CANCEL_LATE_PCT: 100,   /* gratuite ≥ 30 j avant ; 30 % (l'acompte) de 29 à 8 j ; 100 % à 7 j ou moins */
+  HOLD_MINUTES: 30,                          /* une période validée mais non payée expire après ce délai (minutes) */
+  /* Contrat */
+  GUARANTEE: 1500,                            /* dépôt de garantie (caution) demandé à la remise des clés, € */
+  OWNER_NAME: '', OWNER_ADDRESS: '',          /* identité du loueur figurant au contrat */
+  NAV_ZONE: 'Navigation côtière entre Le Croisic et Les Glénan, à 6 milles maximum d’un abri, de jour',
   /* Notifications e-mail aux propriétaires */
   OWNER_EMAILS: '',                          /* à renseigner dans Réglages : "julien@… ; guillaume@…" */
   EMAILJS_SERVICE: 'service_mp0ywp7', EMAILJS_TEMPLATE: 'template_6xykz1c', EMAILJS_KEY: 'IovFsMwJUgt2_zT7i',   /* EmailJS (clé publique : peut figurer dans le code) */
@@ -24,7 +31,9 @@ window.ESCAPADES_DEFAULTS = {
 };
 window.loadParams = function(){
   const P = Object.assign({}, window.ESCAPADES_DEFAULTS);
-  try { Object.assign(P, JSON.parse(localStorage.getItem('escapades-params') || '{}')); } catch(e) {}
+  try { const S = JSON.parse(localStorage.getItem('escapades-params') || '{}');
+        for (const k in S) if (S[k] !== '' && S[k] !== null && S[k] !== undefined) P[k] = S[k];   /* une case vide dans les réglages = valeur par défaut */
+  } catch(e) {}
   return P;
 };
 window.saveParams = function(P){ try { localStorage.setItem('escapades-params', JSON.stringify(P)); } catch(e) {} };
@@ -64,3 +73,12 @@ window.notifyBooking = function(data){
   window.location.href = 'mailto:'+to.join(',')+'?subject='+encodeURIComponent(tpl.subject)+'&body='+encodeURIComponent(body);
   return Promise.resolve('mailto');
 };
+
+/* ---------- Journal d'audit : ajout seul, horodaté, conservé dans le navigateur (en production : table dédiée côté serveur) ---------- */
+window.audit = function(kind, data){ try{ const L = JSON.parse(localStorage.getItem('audit-log')||'[]');
+  L.push({ t: new Date().toISOString(), kind, page: (location.pathname.split('/').pop()||'index.html'), client: localStorage.getItem('sim-client')||'', ua: navigator.userAgent.slice(0,60), data: data||{} });
+  localStorage.setItem('audit-log', JSON.stringify(L)); }catch(e){} };
+/* Périodes non payées expirées : purge et journalisation ; renvoie la liste nettoyée */
+window.purgeExpired = function(key, list){ const P = window.loadParams(), ms = (P.HOLD_MINUTES||30)*60000, now = Date.now(); let changed=false;
+  const kept = list.filter(x => { if(x[3]==='pending' && x[8] && now - x[8] > ms){ changed=true; window.audit('hold_expired', {key, start:x[0], end:x[1], id:x[4], client:x[5]}); return false; } return true; });
+  if(changed){ try{ localStorage.setItem(key, JSON.stringify(kept)); }catch(e){} } return kept; };

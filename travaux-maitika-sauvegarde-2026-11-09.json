@@ -1,0 +1,125 @@
+{
+ "version": 1,
+ "date": "2026-11-09T18:26:09.408Z",
+ "data": {
+  "q": {
+   "L1-22": null,
+   "L1-4": null,
+   "L1-7": 500,
+   "L1-0": 0,
+   "L1-5": 220,
+   "L1-1": 0,
+   "L1-2": 0,
+   "L2-0": 0,
+   "Cmw7o0ijj": 0
+  },
+  "st": {},
+  "rc": {
+   "L1-7": 30,
+   "L1-0": 0,
+   "L2-0": 0,
+   "L2-2": 0,
+   "L1-1": 0,
+   "L1-19": 0,
+   "Cmw8dpzus": 0
+  },
+  "y": {
+   "L1-0": "2027",
+   "L1-4": "2027",
+   "L1-2": "2027",
+   "L1-1": "2027",
+   "L1-3": "2027",
+   "L1-5": "2027",
+   "L1-6": "2027",
+   "L1-11": "2027",
+   "L1-7": "2027",
+   "L1-19": "2027",
+   "L1-12": "2027",
+   "L1-14": "2027",
+   "L1-10": "2027",
+   "L1-18": "2027",
+   "L2-10": "2027",
+   "L1-20": "2027",
+   "L1-17": "2027",
+   "Cmw7o0ijj": "2027",
+   "L2-12": "2027",
+   "L3-2": "2027",
+   "L1-16": "2027",
+   "L1-22": "2029",
+   "Cmw8dpzus": "2027",
+   "Cmw8dvtlc": "2027",
+   "Cmw8dyafa": "2028",
+   "Cmw8dz7u5": "2027",
+   "Cmw9lc5bl": "2027"
+  },
+  "lv": {
+   "L1-5": "3",
+   "L2-2": "1",
+   "L1-8": "3",
+   "L1-17": "2",
+   "Cmw7o0ijj": "1",
+   "L3-2": "1",
+   "L3-3": "1",
+   "L2-9": "1",
+   "L2-12": "1",
+   "L2-10": "3",
+   "L2-3": "1",
+   "L2-4": "1"
+  },
+  "del": [
+   "L1-8"
+  ],
+  "custom": [
+   {
+    "id": "Cmw7o0ijj",
+    "lvl": "2",
+    "poste": "Pont avant et latéraux",
+    "detail": "Threadmaster à remplacer par panneaux en Teck",
+    "est": "",
+    "cat": "Structure & coque"
+   },
+   {
+    "id": "Cmw8dpzus",
+    "poste": "Roof arrière",
+    "detail": "Ajouter un verrou pour le roof arrière de manière à empêcher de tomber en arrière quand on barre",
+    "est": "",
+    "cat": "Pont & accastillage"
+   },
+   {
+    "id": "Cmw8dvtlc",
+    "poste": "Chauffage",
+    "detail": "Démontage ou réparation du système de chauffage",
+    "est": "",
+    "cat": "Confort & intérieur"
+   },
+   {
+    "id": "Cmw8dyafa",
+    "poste": "Sellerie nautique",
+    "detail": "Remplacement de toutes les housses des matelas",
+    "est": "",
+    "cat": "Confort & intérieur"
+   },
+   {
+    "id": "Cmw8dz7u5",
+    "poste": "Feu flottant",
+    "detail": "Mettre à disposition",
+    "est": "",
+    "cat": "Sécurité"
+   },
+   {
+    "id": "Cmw9lc5bl",
+    "poste": "Coussin de dos Cockpit",
+    "detail": "Remplacer les Coussins",
+    "est": "",
+    "cat": "Pont & accastillage"
+   }
+  ],
+  "ed": {
+   "L1-19": {
+    "poste": "WC marin et salle d’eau",
+    "detail": "Remplacement des toilettes chimiques / ouverture passe coque",
+    "rec": "Joints et pompe périodiquement"
+   }
+  }
+ }
+}

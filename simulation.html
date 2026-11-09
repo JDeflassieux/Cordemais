@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simulation de revenus · Escapades Atlantique</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simulation de revenus · Escapades Atlantique</title>
 <script src="params.js"></script>
 <style>
 *{box-sizing:border-box}:root{--bg:#07131c;--bg2:#0b1d29;--bg3:#102736;--line:#1d3645;--tx:#e6eef1;--mut:#9fb3bb;--teal:#19a39b;--cor:#e86f51;--gold:#ffd166;--blue:#4da3ff}
@@ -22,8 +22,8 @@ table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:8px}th,td{
 .eq{margin-top:10px;font-size:1rem;color:var(--tx)}.eq b{color:var(--teal)}
 .note{font-size:.8rem;color:var(--mut);margin-top:8px}
 @media(max-width:760px){.sliders{grid-template-columns:1fr}}
-.d b.sp{background:linear-gradient(90deg,var(--c1) 0 46%,#fff 46% 54%,var(--c2) 54%)}.d b.m.sp{--c1:#0e6b78;--c2:var(--teal)}.d b.p.sp{--c1:#a84a30;--c2:var(--cor)}.d.r:after{content:"";position:absolute;inset:0;border:2px solid #ff4d4d;border-radius:50%;z-index:3;pointer-events:none}.d.gn:before{content:"";position:absolute;top:3px;left:3px;width:6px;height:6px;border-radius:50%;background:#ff4d4d;z-index:4}</style></head><body>
-<nav><a href="reservations.html">← Planning</a><div><a href="#" style="color:#7fd6cf">Simulation</a></div></nav>
+.d b.sp{background:linear-gradient(90deg,var(--c1) 0 46%,#fff 46% 54%,var(--c2) 54%)}.d b.m.sp{--c1:#0e6b78;--c2:var(--teal)}.d b.p.sp{--c1:#a84a30;--c2:var(--cor)}.d.r:after{content:"";position:absolute;inset:0;border:2px solid #ff4d4d;border-radius:50%;z-index:3;pointer-events:none}.d.gn:before{content:"";position:absolute;top:3px;left:3px;width:6px;height:6px;border-radius:50%;background:#ff4d4d;z-index:4}.navLogo{display:flex;align-items:center;margin-right:6px}.navLogo img{height:34px;width:auto;filter:drop-shadow(0 2px 6px #0008)}@media(max-width:760px){.navLogo img{height:28px}}</style></head><body>
+<nav><a href="index.html" class="navLogo" aria-label="Escapades Atlantique"><img src="logo-escapade-embleme.png" alt=""></a><a href="reservations.html">← Planning</a><div><a href="#" style="color:#7fd6cf">Simulation</a></div></nav>
 <div class="wrap">
 <div class="ey">Bac à sable · n’influence pas le site</div><h1>Simulation de revenus</h1>
 <p class="sub">Tirez des réservations au hasard sur les deux bateaux, faites glisser les prix et les coûts, et lisez le bilan. Rien n’est enregistré : fermer la page efface tout. Les règles appliquées sont celles du site : saisons, ⅓ et ⅔ pour les jours d’extrémité, remises jours verts, part de Guillaume, règle des nuits de port et convoyages.</p>
@@ -112,8 +112,10 @@ function compute(){PAR.forEach(([k])=>{const e=document.getElementById('v_'+k);i
   const M=Math.max(0,+document.getElementById('margin').value||0),before=Math.ceil(M/2),after=M-before;const conv=[],margin=[],gapN=[];let nights=0;
   if(BK.m.length){const f=BK.m[0][0],l=BK.m[BK.m.length-1][1];for(let k=1;k<=before;k++)margin.push(f-k);for(let k=1;k<=after;k++)margin.push(l+k);conv.push(f-before-1);conv.push(l+after+1);nights+=M;
     for(let i=1;i<BK.m.length;i++){const g=BK.m[i][0]-BK.m[i-1][1];if(g>V.LONG_GAP){conv.push(BK.m[i-1][1]+1);conv.push(BK.m[i][0]-1)}else{for(let n=BK.m[i-1][1]+1;n<BK.m[i][0];n++)gapN.push(n);nights+=Math.max(0,g)}}}
-  const convCost=conv.length*V.CONVOY_FEE+Math.ceil(conv.length/2)*V.TRACTOR,port=nights*V.NIGHT,guil=keys+eta+travel+convCost,julien=revM-guil-port;
-  const daysM=BK.m.reduce((s,[a,b])=>s+b-a+1,0),daysP=BK.p.reduce((s,[a,b])=>s+b-a+1,0);
+  conv.sort((x,y)=>x-y);   /* chronologique : aller, retour, aller, retour… */
+  const port=nights*V.NIGHT;
+  const convCost=conv.length*V.CONVOY_FEE+Math.ceil(conv.length/2)*V.TRACTOR,guil=keys+eta+travel+convCost,julien=revM-guil-port;
+  const distinct=L=>{const S=new Set();L.forEach(([a,b])=>{for(let n=a;n<=b;n++)S.add(n)});return S.size};const daysM=distinct(BK.m),daysP=distinct(BK.p);
   document.getElementById('kp').innerHTML=[['Recettes Maïtika',eur(revM),BK.m.length+' location(s) · '+daysM+' jours'],['Recettes Petit Bonheur',eur(revP),BK.p.length+' location(s) · '+daysP+' jours'],['Chevauchements Maïtika',green,'départs ou retours partagés, remise accordée'],['Convoyages',conv.length,eur(convCost)+' tracteur compris'],['Nuits de port à ma charge',nights,eur(port)+' · '+M+' avant/après + '+gapN.length+' entre deux locations'],['Part de Guillaume (Maïtika)',eur(guil),'clés + états des lieux + déplacements + convoyages'],['Part de Julien',eur(julien),Math.round(revM?julien/revM*100:0)+' % des recettes Maïtika']].map(([l,v,s],i)=>'<div class="kpi'+(i===6?' j':i===5?' g':'')+'"><small>'+l+'</small><b>'+v+'</b><span class="note">'+s+'</span></div>').join('');
   document.getElementById('tb').innerHTML='<thead><tr><th>Location Maïtika</th><th>Jours</th><th>Base</th><th>Remise</th><th>Encaissé</th><th>Clés</th><th>État des lieux</th></tr></thead><tbody>'+rowsM.map(({r,q})=>'<tr><td>'+fmt(r[0])+' → '+fmt(r[1])+(q.green?' <span style="color:#3ddc84">●'.repeat(q.green)+'</span>':'')+(q.early?' <span style="color:var(--mut)">anticipée</span>':'')+'</td><td>'+(r[1]-r[0]+1)+'</td><td>'+eur(q.base)+'</td><td>'+(q.disc?'−'+Math.round(q.disc*100)+' %':'—')+'</td><td>'+eur(q.total)+'</td><td>'+eur(V.KEY_FEE)+'</td><td>'+eur(q.total*V.PCT_RET/100)+'</td></tr>').join('')+'</tbody><tfoot><tr><th>Total</th><th>'+daysM+'</th><th></th><th></th><th>'+eur(revM)+'</th><th>'+eur(keys)+'</th><th>'+eur(eta)+'</th></tr></tfoot>';
   document.getElementById('eq').innerHTML=eur(revM)+' de recettes − '+eur(guil)+' pour Guillaume ('+eur(keys)+' clés + '+eur(eta)+' états des lieux + '+eur(travel)+' déplacements + '+eur(convCost)+' convoyages) − '+eur(port)+' de port = <b>'+eur(julien)+' pour Julien</b>';
