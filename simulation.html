@@ -1,0 +1,131 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simulation de revenus · Escapades Atlantique</title>
+<script src="params.js"></script>
+<style>
+*{box-sizing:border-box}:root{--bg:#07131c;--bg2:#0b1d29;--bg3:#102736;--line:#1d3645;--tx:#e6eef1;--mut:#9fb3bb;--teal:#19a39b;--cor:#e86f51;--gold:#ffd166;--blue:#4da3ff}
+html{font-size:clamp(14px,1vw,18px)}body{margin:0;font:1rem/1.5 system-ui;color:var(--tx);background:var(--bg);padding-top:62px}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:#07131cf0;padding:12px 4vw;display:flex;gap:20px;justify-content:space-between;border-bottom:1px solid var(--line)}nav a{text-decoration:none;color:var(--tx);font-weight:800}
+.wrap{max-width:min(1500px,96vw);margin:auto;padding:24px 2vw 80px}
+.ey{text-transform:uppercase;letter-spacing:.18em;font-size:.75rem;font-weight:850;color:var(--teal)}h1{font:clamp(1.6rem,3.5vw,2.4rem)/1.05 Georgia;margin:.2em 0 .2em}.sub{color:var(--mut);max-width:1000px;margin:0 0 14px}
+.panel{background:var(--bg3);border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin:12px 0}
+.row{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}.row label{font-size:.82rem;color:var(--mut);display:flex;flex-direction:column;gap:4px}.row input[type=date],.row input[type=number]{padding:8px 10px;border-radius:9px;border:1px solid var(--line);background:#0c2130;color:var(--tx);font:700 .95rem system-ui}
+.btn{padding:10px 18px;border-radius:99px;border:0;background:var(--teal);color:#07131c;font:800 .95rem system-ui;cursor:pointer}.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--tx)}
+.months{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:10px}
+.month{background:#0c2130;border:1px solid var(--line);border-radius:12px;padding:10px}.month h3{margin:0 0 4px;text-align:center;font:1rem Georgia}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);font-size:.62rem;color:var(--mut);text-align:center}.days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.d{aspect-ratio:1;border-radius:6px;background:#0a1a24;position:relative;font-size:.72rem;display:flex;flex-direction:column;overflow:hidden}.d span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2}.d b{flex:1}.d .m{background:var(--teal)}.d .p{background:var(--cor)}
+.d.off{opacity:.25}.d.g span{outline:2px solid #3ddc84;outline-offset:-2px;border-radius:6px}.d.c:after{content:"";position:absolute;inset:0;border:2px solid var(--blue);border-radius:50%;z-index:3;pointer-events:none}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;color:var(--mut);margin-top:8px}.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px 22px}.sl{display:flex;flex-direction:column;gap:2px;font-size:.8rem;color:var(--mut)}.sl .v{color:var(--gold);font-weight:800;font-size:.95rem}.sl input[type=range]{width:100%;accent-color:var(--teal)}
+h2{font:1.3rem Georgia;color:var(--gold);margin:22px 0 8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.kpi{background:#0c2130;border:1px solid var(--line);border-radius:12px;padding:10px 14px}.kpi small{display:block;color:var(--mut);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}.kpi b{display:block;font-size:1.3rem;color:#fff}.kpi.j b{color:var(--teal)}.kpi.g b{color:var(--cor)}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:8px}th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}th{color:var(--mut);font-size:.7rem;text-transform:uppercase}
+.eq{margin-top:10px;font-size:1rem;color:var(--tx)}.eq b{color:var(--teal)}
+.note{font-size:.8rem;color:var(--mut);margin-top:8px}
+@media(max-width:760px){.sliders{grid-template-columns:1fr}}
+.d b.sp{background:linear-gradient(90deg,var(--c1) 0 46%,#fff 46% 54%,var(--c2) 54%)}.d b.m.sp{--c1:#0e6b78;--c2:var(--teal)}.d b.p.sp{--c1:#a84a30;--c2:var(--cor)}.d.r:after{content:"";position:absolute;inset:0;border:2px solid #ff4d4d;border-radius:50%;z-index:3;pointer-events:none}.d.gn:before{content:"";position:absolute;top:3px;left:3px;width:6px;height:6px;border-radius:50%;background:#ff4d4d;z-index:4}</style></head><body>
+<nav><a href="reservations.html">← Planning</a><div><a href="#" style="color:#7fd6cf">Simulation</a></div></nav>
+<div class="wrap">
+<div class="ey">Bac à sable · n’influence pas le site</div><h1>Simulation de revenus</h1>
+<p class="sub">Tirez des réservations au hasard sur les deux bateaux, faites glisser les prix et les coûts, et lisez le bilan. Rien n’est enregistré : fermer la page efface tout. Les règles appliquées sont celles du site : saisons, ⅓ et ⅔ pour les jours d’extrémité, remises jours verts, part de Guillaume, règle des nuits de port et convoyages.</p>
+
+<div class="panel"><div class="row">
+ <label>Début de saison<input type="date" id="d0" value="2027-05-01"></label><label>Fin de saison<input type="date" id="d1" value="2027-10-31"></label>
+ <label>Réservations Maïtika<input type="number" id="nM" min="0" max="30" value="8" style="width:90px"></label>
+ <label>Réservations Petit Bonheur<input type="number" id="nP" min="0" max="30" value="8" style="width:90px"></label>
+ <label>Chevauchements Maïtika voulus <small id="nGmax" style="color:var(--gold)"></small><input type="number" id="nG" min="0" max="30" value="4" style="width:90px"></label>
+ <label>Part de réservations anticipées<input type="number" id="early" min="0" max="100" value="50" style="width:90px"> %</label><label>Nuits de port à ma charge (total, réparties avant / après)<input type="number" id="margin" min="0" max="30" value="0" style="width:90px"></label>
+ <button class="btn" id="draw">🎲 Nouveau tirage</button><span class="note" id="seedInfo"></span>
+</div>
+<div class="months" id="cal"></div>
+<div class="legend"><span><i style="background:var(--teal)"></i>Maïtika</span><span><i style="background:var(--cor)"></i>Petit Bonheur</span><span><i style="outline:2px solid #3ddc84;outline-offset:-2px"></i>Jour vert : départ ou retour de Maïtika partagé (un enchaînement Maïtika / Maïtika compte pour deux chevauchements, un tuilage avec Petit Bonheur pour un)</span><span><i style="background:linear-gradient(90deg,#0e6b78 0 46%,#fff 46% 54%,#19a39b 54%)"></i>Trait blanc : deux locations du même bateau s’enchaînent ce jour-là</span><span><i style="border:2px solid var(--blue);border-radius:50%"></i>Convoyage Cordemais ↔ Pornichet</span><span><i style="border:2px solid #ff4d4d;border-radius:50%"></i>Nuit de port à ma charge (avant / après les locations)</span><span><i style="background:#ff4d4d;width:7px;height:7px;border-radius:50%"></i>Nuit vide entre deux locations, aussi à ma charge</span></div>
+</div>
+
+<h2>Prix et coûts</h2>
+<div class="panel"><div class="sliders" id="sl"></div></div>
+
+<h2>Bilan de la simulation</h2>
+<div class="kpis" id="kp"></div>
+<div class="panel"><table id="tb"></table><p class="eq" id="eq"></p><p class="note">Convoyages : un aller avant la première location de Maïtika et un retour après la dernière ; si un trou entre deux locations dépasse le seuil, le bateau rentre à Cordemais (deux convoyages de plus) et ces nuits ne sont pas comptées au port. Petit Bonheur appartient à Guillaume : ses recettes sont indiquées pour information.</p></div>
+<h2>Comment lire cette simulation</h2>
+<div class="panel" style="font-size:.92rem;line-height:1.6">
+<p><b>Chevauchement Maïtika.</b> Une réservation Maïtika dont le <i>départ</i> ou le <i>retour</i> tombe le même jour qu’une autre réservation : soit deux locations Maïtika qui s’enchaînent (le retour de l’une est le départ de l’autre, Guillaume fait l’état des lieux et la remise des clés dans la même journée), soit un tuilage avec Petit Bonheur (un départ ou un retour de chaque bateau le même jour). Chaque extrémité partagée compte pour un : un enchaînement Maïtika / Maïtika vaut donc <b>deux</b> chevauchements, un tuilage avec Petit Bonheur en vaut <b>un</b>. C’est exactement le nombre de remises « jour vert » accordées.</p>
+<p><b>Maximum affiché.</b> Chaque réservation Maïtika a deux extrémités, donc au plus 2 × (nombre de Maïtika) chevauchements quand Petit Bonheur peut tuiler ; sans Petit Bonheur, seuls les enchaînements sont possibles : 2 × (nombre de Maïtika − 1). Le tirage essaie d’atteindre le nombre demandé en recalant des réservations ; les durées minimales et la longueur de la saison l’en empêchent parfois, le compteur dit alors ce qui a été obtenu.</p>
+<p><b>Calendrier.</b> Sarcelle : Maïtika ; orange : Petit Bonheur ; cercle vert : jour vert touchant Maïtika ; trait blanc dans une case : deux locations du même bateau s’y enchaînent ; cercle bleu : jour de convoyage (aller la veille de la première location Maïtika, retour le lendemain de la dernière).</p>
+<p><b>Nuits de port à ma charge.</b> Le nombre saisi en haut est un total : la moitié (arrondie au-dessus) est placée avant le premier départ Maïtika, le reste après le dernier retour. Chaque nuit est un jour cerclé de rouge (8 saisies = 8 cercles rouges), et les convoyages bleus se placent juste avant et juste après. S’y ajoutent, avec un point rouge, les nuits vides entre deux locations d’un même bloc, également à ma charge. Le bilan additionne les deux.</p><p><b>Règle des nuits de port.</b> Entre deux locations Maïtika, le bateau reste à Pornichet et chaque nuit vide est comptée au tarif de la nuit de port, tant que le trou ne dépasse pas le seuil (réglable, par défaut le point où un aller-retour à Cordemais coûte moins cher que les nuits). Au-delà, le bateau rentre à Cordemais : deux convoyages de plus, et ces nuits ne sont pas comptées au port.</p>
+<p><b>Prix et remises.</b> Prix par jour selon la saison (juillet-août ou hors saison), jour de départ compté ⅓, jour de retour ⅔. Remise d’un jour vert si le départ <i>ou</i> le retour est partagé, remise « deux jours verts » si les deux le sont, et remise « réservation anticipée » appliquée à la part de réservations indiquée en haut.</p>
+<p><b>Parts.</b> Guillaume reçoit sur Maïtika : le forfait de remise des clés par location, le pourcentage d’état des lieux sur le prix de chaque location, un déplacement par jour où il vient uniquement pour Maïtika (aucun mouvement de Petit Bonheur ce jour-là), et les convoyages (tracteur compris). Part de Julien = recettes Maïtika − Guillaume − nuits de port. Les recettes de Petit Bonheur reviennent à Guillaume et ne sont données qu’à titre d’information.</p>
+</div></div>
+<script>(()=>{
+const P0=window.PARAMS||{};const D=864e5;
+const num=(y,m,d)=>Math.floor(Date.UTC(y,m,d)/D),parse=s=>{const [y,m,d]=s.split('-').map(Number);return num(y,m-1,d)},toDate=n=>{const t=new Date(n*D);return new Date(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate())};
+const fmt=n=>{const d=toDate(n);return (d.getDate()===1?'1er':d.getDate())+' '+d.toLocaleDateString('fr-FR',{month:'short'})};const eur=v=>Math.round(v).toLocaleString('fr-FR')+' €';
+const isHigh=n=>{const m=new Date(n*D).getUTCMonth();return m===6||m===7};
+/* ---- paramètres (copie locale, modifiable par curseurs) ---- */
+const PAR=[['PRICE_M_HIGH','Maïtika · pleine saison (€/j)',100,400,5],['PRICE_M_LOW','Maïtika · hors saison (€/j)',80,350,5],['PRICE_P_HIGH','Petit Bonheur · pleine saison (€/j)',60,300,5],['PRICE_P_LOW','Petit Bonheur · hors saison (€/j)',50,250,5],
+ ['DISC_ONE','Remise un jour vert (%)',0,30,1],['DISC_BOTH','Remise deux jours verts (%)',0,40,1],['DISC_EARLY','Remise réservation anticipée (%)',0,30,1],
+ ['KEY_FEE','Guillaume · remise des clés (€)',0,200,5],['PCT_RET','Guillaume · état des lieux (% du prix)',0,25,.5],['TRAVEL','Guillaume · déplacement si seul (€)',0,200,5],['CONVOY_FEE','Convoyage, l’un (€)',0,800,10],['TRACTOR','Tracteur, l’aller-retour (€)',0,400,10],
+ ['NIGHT','Nuit de port à Pornichet (€)',0,80,1],['LONG_GAP','Seuil retour à Cordemais (nuits vides)',5,60,1],['MIN_M','Durée min. Maïtika (jours)',3,10,1],['MIN_P','Durée min. Petit Bonheur (jours)',2,10,1]];
+const V={};PAR.forEach(([k])=>V[k]=P0[k]??0);if(!V.LONG_GAP)V.LONG_GAP=Math.ceil((2*V.CONVOY_FEE+V.TRACTOR)/Math.max(1,V.NIGHT));
+const SL=document.getElementById('sl');PAR.forEach(([k,l,a,b,st])=>{const d=document.createElement('div');d.className='sl';d.innerHTML='<span>'+l+'</span><span class="v" id="v_'+k+'"></span><input type="range" min="'+a+'" max="'+b+'" step="'+st+'" value="'+V[k]+'" data-k="'+k+'">';SL.appendChild(d);d.querySelector('input').oninput=e=>{V[k]=parseFloat(e.target.value);compute()}});
+/* ---- générateur aléatoire reproductible ---- */
+let seed=Date.now()%100000;const rng=()=>{seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296};
+let BK={m:[],p:[]},GOT=0;
+/* maximum théorique de jours verts : chaque jour vert consomme au moins deux extrémités (départ ou retour) ; une réservation seule ne peut rien partager */
+/* chaque jour vert doit toucher une réservation Maïtika : au plus 2 extrémités par réservation Maïtika, et il faut au moins deux réservations au total */
+/* maximum : chaque réservation Maïtika peut partager son départ et son retour (2) ; sans Petit Bonheur, seul l'enchaînement est possible : 2 × (nM − 1) */
+function maxGreen(){const m=+nM.value||0,p=+nP.value||0;if(!m||m+p<2)return 0;return p?2*m:2*(m-1)}
+function clampG(){const mx=maxGreen();nG.max=mx;if(+nG.value>mx)nG.value=mx;nGmax.textContent='max '+mx}
+function draw(){clampG();const s0=parse(d0.value),s1=parse(d1.value);if(s1-s0<10)return;
+  const gen=(n,min,max)=>{const L=[];let tries=0;while(L.length<n&&tries++<2000){const len=min+Math.floor(rng()*(max-min+1))-1,a=s0+Math.floor(rng()*(s1-s0-len)),b=a+len;if(L.every(([x,y])=>b<=x||a>=y))L.push([a,b])}return L.sort((x,y)=>x[0]-y[0])};
+  BK.m=gen(+nM.value,V.MIN_M,V.MIN_M+6);BK.p=gen(+nP.value,V.MIN_P,V.MIN_P+5);
+  /* chevauchements voulus : on recale, une par une, des réservations pour qu'elles partagent un jour avec une autre
+     (enchaînement sur le même bateau, ou tuilage avec l'autre bateau). Essais systématiques, pas au hasard. */
+  let want=+nG.value;const all=()=>[...BK.m.map(r=>['m',r]),...BK.p.map(r=>['p',r])];
+  const shared=(bo,r)=>all().some(([b2,t])=>t!==r&&(t[0]===r[0]||t[0]===r[1]||t[1]===r[0]||t[1]===r[1]));
+  const fits=(bo,r,c)=>c[0]>=s0&&c[1]<=s1&&BK[bo].filter(x=>x!==r).every(([x,y])=>c[1]<=x||c[0]>=y);
+  const greenCount=()=>{const A=all();let c=0;BK.m.forEach(r=>[r[0],r[1]].forEach(n=>{if(A.some(([b2,t])=>t!==r&&(t[0]===n||t[1]===n)))c++}));return c};
+  let got=greenCount();
+  const minOf=bo=>bo==='m'?V.MIN_M-1:V.MIN_P-1;
+  for(let pass=0;pass<3&&got<want;pass++){
+   for(const [bo,r] of all().sort(()=>rng()-.5)){if(got>=want)break;const len=r[1]-r[0];let best=null,bestGain=0;const before=greenCount();
+    for(const [b2,t] of all()){if(t===r)continue;const cands=[[t[1],t[1]+len],[t[0]-len,t[0]]];if(b2!==bo&&t[1]-t[0]>=minOf(bo))cands.push([t[0],t[1]]); /* même période sur l'autre bateau : deux jours verts */
+      for(const c of cands){if(!fits(bo,r,c))continue;const o=[r[0],r[1]];r[0]=c[0];r[1]=c[1];const g=greenCount()-before;r[0]=o[0];r[1]=o[1];if(g>bestGain){bestGain=g;best=c}}}
+    if(best){r[0]=best[0];r[1]=best[1];got=greenCount()}}}
+  BK.m.sort((x,y)=>x[0]-y[0]);BK.p.sort((x,y)=>x[0]-y[0]);
+  GOT=greenCount();
+  seedInfo.textContent='Tirage n° '+(seed%100000)+' · chevauchements Maïtika : '+(+nG.value)+' demandé(s), '+GOT+' obtenu(s)';compute()}
+/* ---- calcul ---- */
+function compute(){PAR.forEach(([k])=>{const e=document.getElementById('v_'+k);if(e)e.textContent=/PCT|DISC/.test(k)?V[k]+' %':(/MIN|GAP/.test(k)?V[k]:eur(V[k]))});
+  const s0=parse(d0.value),s1=parse(d1.value),early=(+document.getElementById('early').value||0)/100;
+  const passM=new Set(),passP=new Set();BK.m.forEach(([a,b])=>{passM.add(a);passM.add(b)});BK.p.forEach(([a,b])=>{passP.add(a);passP.add(b)});
+  const price=(boat,a,b,idx)=>{let base=0;for(let n=a;n<=b;n++){const w=n===a?1/3:(n===b?2/3:1);base+=w*(isHigh(n)?V['PRICE_'+boat.toUpperCase()+'_HIGH']:V['PRICE_'+boat.toUpperCase()+'_LOW'])}
+    /* jours verts : départ/retour partagé avec une AUTRE réservation (même bateau ou l'autre) */
+    const other=boat==='m'?passP:passM,same=(boat==='m'?BK.m:BK.p).filter((r,i)=>i!==idx);const sh=n=>other.has(n)||same.some(([x,y])=>x===n||y===n);
+    const ga=sh(a),gb=sh(b);let disc=(ga&&gb?V.DISC_BOTH:(ga||gb?V.DISC_ONE:0))/100;const isEarly=((idx*7919)%100)/100<early;if(isEarly)disc+=V.DISC_EARLY/100;
+    return {base,disc,total:base*(1-disc),green:(ga?1:0)+(gb?1:0),early:isEarly}};
+  let revM=0,revP=0,green=0,earlyN=0;const rowsM=BK.m.map((r,i)=>{const q=price('m',r[0],r[1],i);revM+=q.total;green+=q.green;if(q.early)earlyN++;return {r,q}});BK.p.forEach((r,i)=>{revP+=price('p',r[0],r[1],i).total});
+  /* Guillaume sur Maïtika */
+  let keys=0,eta=0,travel=0;const tdays=new Set();rowsM.forEach(({r,q})=>{keys+=V.KEY_FEE;eta+=q.total*V.PCT_RET/100;for(const n of [r[0],r[1]]){if(!passP.has(n)&&!tdays.has(n)){tdays.add(n);travel+=V.TRAVEL}}});
+  /* blocs, convoyages, nuits de port */
+  /* nuits à ma charge : total M réparti avant le premier départ (moitié haute) et après le dernier retour (moitié basse) ;
+     chaque nuit est un jour cerclé de rouge ; les nuits vides entre deux locations d'un même bloc sont aussi à ma charge (point rouge) */
+  const M=Math.max(0,+document.getElementById('margin').value||0),before=Math.ceil(M/2),after=M-before;const conv=[],margin=[],gapN=[];let nights=0;
+  if(BK.m.length){const f=BK.m[0][0],l=BK.m[BK.m.length-1][1];for(let k=1;k<=before;k++)margin.push(f-k);for(let k=1;k<=after;k++)margin.push(l+k);conv.push(f-before-1);conv.push(l+after+1);nights+=M;
+    for(let i=1;i<BK.m.length;i++){const g=BK.m[i][0]-BK.m[i-1][1];if(g>V.LONG_GAP){conv.push(BK.m[i-1][1]+1);conv.push(BK.m[i][0]-1)}else{for(let n=BK.m[i-1][1]+1;n<BK.m[i][0];n++)gapN.push(n);nights+=Math.max(0,g)}}}
+  const convCost=conv.length*V.CONVOY_FEE+Math.ceil(conv.length/2)*V.TRACTOR,port=nights*V.NIGHT,guil=keys+eta+travel+convCost,julien=revM-guil-port;
+  const daysM=BK.m.reduce((s,[a,b])=>s+b-a+1,0),daysP=BK.p.reduce((s,[a,b])=>s+b-a+1,0);
+  document.getElementById('kp').innerHTML=[['Recettes Maïtika',eur(revM),BK.m.length+' location(s) · '+daysM+' jours'],['Recettes Petit Bonheur',eur(revP),BK.p.length+' location(s) · '+daysP+' jours'],['Chevauchements Maïtika',green,'départs ou retours partagés, remise accordée'],['Convoyages',conv.length,eur(convCost)+' tracteur compris'],['Nuits de port à ma charge',nights,eur(port)+' · '+M+' avant/après + '+gapN.length+' entre deux locations'],['Part de Guillaume (Maïtika)',eur(guil),'clés + états des lieux + déplacements + convoyages'],['Part de Julien',eur(julien),Math.round(revM?julien/revM*100:0)+' % des recettes Maïtika']].map(([l,v,s],i)=>'<div class="kpi'+(i===6?' j':i===5?' g':'')+'"><small>'+l+'</small><b>'+v+'</b><span class="note">'+s+'</span></div>').join('');
+  document.getElementById('tb').innerHTML='<thead><tr><th>Location Maïtika</th><th>Jours</th><th>Base</th><th>Remise</th><th>Encaissé</th><th>Clés</th><th>État des lieux</th></tr></thead><tbody>'+rowsM.map(({r,q})=>'<tr><td>'+fmt(r[0])+' → '+fmt(r[1])+(q.green?' <span style="color:#3ddc84">●'.repeat(q.green)+'</span>':'')+(q.early?' <span style="color:var(--mut)">anticipée</span>':'')+'</td><td>'+(r[1]-r[0]+1)+'</td><td>'+eur(q.base)+'</td><td>'+(q.disc?'−'+Math.round(q.disc*100)+' %':'—')+'</td><td>'+eur(q.total)+'</td><td>'+eur(V.KEY_FEE)+'</td><td>'+eur(q.total*V.PCT_RET/100)+'</td></tr>').join('')+'</tbody><tfoot><tr><th>Total</th><th>'+daysM+'</th><th></th><th></th><th>'+eur(revM)+'</th><th>'+eur(keys)+'</th><th>'+eur(eta)+'</th></tr></tfoot>';
+  document.getElementById('eq').innerHTML=eur(revM)+' de recettes − '+eur(guil)+' pour Guillaume ('+eur(keys)+' clés + '+eur(eta)+' états des lieux + '+eur(travel)+' déplacements + '+eur(convCost)+' convoyages) − '+eur(port)+' de port = <b>'+eur(julien)+' pour Julien</b>';
+  /* calendrier */
+  const cal=document.getElementById('cal');cal.innerHTML='';const greenDays=new Set(),chainM=new Set(),chainP=new Set();const allB=[...BK.m.map(r=>['m',r]),...BK.p.map(r=>['p',r])];
+  allB.forEach(([bo,r])=>[r[0],r[1]].forEach(n=>{allB.forEach(([b2,t])=>{if(t!==r&&(t[0]===n||t[1]===n)&&(bo==='m'||b2==='m'))greenDays.add(n)})}));
+  BK.m.forEach((r,i)=>{if(i&&BK.m[i-1][1]===r[0])chainM.add(r[0])});BK.p.forEach((r,i)=>{if(i&&BK.p[i-1][1]===r[0])chainP.add(r[0])});
+  const y0=toDate(s0).getFullYear(),m0=toDate(s0).getMonth(),y1=toDate(s1).getFullYear(),m1=toDate(s1).getMonth();
+  for(let y=y0,m=m0;y<y1||(y===y1&&m<=m1);m++){if(m>11){m=0;y++}const box=document.createElement('div');box.className='month';box.innerHTML='<h3>'+new Date(y,m,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'})+'</h3><div class="wk">'+['L','M','M','J','V','S','D'].map(x=>'<span>'+x+'</span>').join('')+'</div><div class="days"></div>';
+    const g=box.querySelector('.days'),f=new Date(y,m,1).getDay()||7;for(let z=1;z<f;z++)g.append(document.createElement('i'));
+    for(let d=1;d<=new Date(y,m+1,0).getDate();d++){const n=num(y,m,d),c=document.createElement('div');c.className='d'+(n<s0||n>s1?' off':'')+(greenDays.has(n)?' g':'')+(conv.includes(n)?' c':'')+(margin.includes(n)?' r':'')+(gapN.includes(n)?' gn':'');c.innerHTML='<b class="'+(BK.m.some(([a,b])=>n>=a&&n<=b)?'m'+(chainM.has(n)?' sp':''):'')+'"></b><b class="'+(BK.p.some(([a,b])=>n>=a&&n<=b)?'p'+(chainP.has(n)?' sp':''):'')+'"></b><span>'+d+'</span>';g.append(c)}
+    cal.appendChild(box)}}
+document.getElementById('draw').onclick=()=>{seed=Math.floor(Math.random()*100000);draw()};['d0','d1','nM','nP','nG','early','margin'].forEach(id=>document.getElementById(id).onchange=()=>{if(id==='early'||id==='margin')compute();else draw()});['nM','nP'].forEach(id=>document.getElementById(id).oninput=clampG);
+draw();
+})();</script></body></html>
