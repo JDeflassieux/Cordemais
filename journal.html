@@ -1,0 +1,70 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><link rel="icon" type="image/png" href="favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Journal de bord · Escapades Atlantique</title>
+<script src="params.js"></script>
+<style>
+*{box-sizing:border-box}:root{--bg:#07131c;--bg2:#0b1d29;--bg3:#102736;--line:#1d3645;--tx:#e6eef1;--mut:#9fb3bb;--teal:#19a39b;--cor:#e86f51;--gold:#ffd166}
+html{font-size:clamp(14px,1vw,17px)}body{margin:0;font:1rem/1.5 system-ui;color:var(--tx);background:var(--bg);padding-top:62px}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:#07131cf0;padding:12px 4vw;display:flex;gap:16px;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}nav a{text-decoration:none;color:var(--tx);font-weight:800}.navLogo img{height:34px}
+.wrap{max-width:1300px;margin:auto;padding:24px 3vw 80px}.ey{text-transform:uppercase;letter-spacing:.18em;font-size:.75rem;font-weight:850;color:var(--teal)}h1{font:clamp(1.6rem,3.5vw,2.4rem)/1.05 Georgia;margin:.2em 0}.sub{color:var(--mut);max-width:900px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}.tools select,.tools input{padding:8px 12px;border-radius:9px;border:1px solid var(--line);background:#0c2130;color:var(--tx);font:700 .9rem system-ui}.btn{padding:9px 16px;border-radius:99px;border:1px solid var(--line);background:var(--bg3);color:var(--tx);font:700 .9rem system-ui;cursor:pointer}.btn.warn{border-color:#e86f5199;color:#ffb39d}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:10px 0 18px}.kpi{background:var(--bg3);border:1px solid var(--line);border-radius:12px;padding:10px 14px}.kpi small{display:block;color:var(--mut);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}.kpi b{font-size:1.3rem;color:var(--gold)}
+.day{margin:22px 0 8px;font:1.1rem Georgia;color:var(--gold);border-bottom:1px solid var(--line);padding-bottom:4px;position:sticky;top:60px;background:var(--bg);z-index:2}
+.ev{display:grid;grid-template-columns:72px 28px 1fr;gap:10px;padding:8px 10px;border-left:2px solid var(--line);margin-left:8px;align-items:start}.ev:hover{background:#0c2130}.ev time{color:var(--mut);font-variant-numeric:tabular-nums;font-size:.9rem}.ev .ic{font-size:1.1rem;text-align:center}.ev .who{color:var(--teal);font-weight:800}.ev .txt{line-height:1.45}.ev .det{display:block;color:var(--mut);font-size:.78rem;margin-top:2px}
+.ev.k-paid,.ev.k-confirmed_test{border-left-color:#3ddc84}.ev.k-cancelled,.ev.k-hold_withdrawn,.ev.k-hold_expired,.ev.k-conflict_refused{border-left-color:#ff5a4a}.ev.k-hold_created{border-left-color:var(--gold)}.ev.k-visit,.ev.k-client_switch{border-left-color:#4da3ff}.ev.k-params_saved,.ev.k-params_reset,.ev.k-convoy_marked,.ev.k-convoy_unmarked{border-left-color:#c084fc}
+.empty{color:var(--mut);padding:30px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+@media print{nav,.tools{display:none}body{background:#fff;color:#000}.day{position:static;color:#000}}
+</style></head><body>
+<nav><a href="index.html" class="navLogo"><img src="logo-escapade-embleme.png" alt=""></a><a href="reservations.html">← Planning</a><div style="display:flex;gap:16px"><a href="regles.html">Règles & tarifs</a><a href="simulation.html">Simulation</a><a href="journal.html" style="color:#7fd6cf">Journal</a></div></nav>
+<div class="wrap">
+<div class="ey">Document interne · traçabilité</div><h1>Journal de bord</h1>
+<p class="sub">Chronologie de tout ce qui se passe sur le site : accès aux pages, choix de client (test), périodes validées, paiements, retraits, expirations, annulations, conflits de dates, réglages, convoyages, contrats ouverts. Chaque ligne est horodatée et ne peut être ni modifiée ni supprimée isolément ; seule la purge complète, après téléchargement, est possible et laisse une trace.</p>
+<div class="kpis" id="kp"></div>
+<div class="tools"><label>Client <select id="fClient"><option value="">tous</option></select></label><label>Action <select id="fKind"><option value="">toutes</option></select></label><label>Bateau <select id="fBoat"><option value="">tous</option><option value="maitika">Maïtika</option><option value="petit-bonheur">Petit Bonheur</option></select></label><input id="fText" placeholder="Rechercher (date, montant, page…)" style="min-width:220px">
+<span style="flex:1"></span><button class="btn" id="csv">⬇ CSV</button><button class="btn" id="json">⬇ JSON</button><button class="btn" id="print">🖨 Imprimer</button><button class="btn warn" id="purge">⬇ Télécharger puis effacer</button><button class="btn warn" id="purgeNow">🗑 Effacer sans télécharger</button></div>
+<div id="list"></div>
+</div>
+<script>(()=>{const K='audit-log';let L=[];try{L=JSON.parse(localStorage.getItem(K)||'[]')}catch(e){}
+const eur=v=>Math.round(v).toLocaleString('fr-FR')+' €';const fd=s=>{if(!s)return '';const [y,m,d]=s.split('-');return new Date(+y,m-1,+d).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})};
+const boatOf=e=>{const k=(e.data&&e.data.key)||'';return k.startsWith('maitika')?'Maïtika':k.startsWith('petit')?'Petit Bonheur':(e.data&&e.data.boat)||(e.page==='dehler.html'?'Maïtika':e.page==='petit-bonheur.html'?'Petit Bonheur':'')};
+const PAGE={'index.html':'l’accueil','dehler.html':'la fiche Maïtika','petit-bonheur.html':'la fiche Petit Bonheur','paiement.html':'la page de paiement','reservations.html':'le planning','contrat.html':'le contrat','conditions.html':'les conditions','regles.html':'les règles','travaux.html':'la page travaux','transport.html':'la page transport','simulation.html':'la simulation','journal.html':'le journal'};
+const ICON={visit:'👁',client_switch:'👤',hold_created:'🗓',paid:'💳',confirmed_test:'✅',hold_withdrawn:'↩',hold_expired:'⏱',cancelled:'✕',conflict_refused:'⚠',params_saved:'⚙',params_reset:'⚙',convoy_marked:'🚢',convoy_unmarked:'🚢',reset_bookings:'🧹',audit_purged:'🗑',cancellations_cleared:'🧹',contract_opened:'📄'};
+const LBL={visit:'Accès à une page',client_switch:'Changement de client (test)',hold_created:'Période validée',paid:'Acompte payé',confirmed_test:'Confirmée sans paiement (test)',hold_withdrawn:'Période retirée',hold_expired:'Période expirée',cancelled:'Annulation',conflict_refused:'Conflit de dates refusé',params_saved:'Réglages modifiés',params_reset:'Réglages rétablis',convoy_marked:'Convoyage marqué',convoy_unmarked:'Convoyage retiré',reset_bookings:'Réservations de test effacées',audit_purged:'Journal effacé',cancellations_cleared:'Annulations effacées',contract_opened:'Contrat ouvert'};
+/* noms connus : d'après les paiements (journal) et les réservations enregistrées (coordonnées saisies à l'acompte) */
+const NAMES={};L.forEach(e=>{if(e.kind==='paid'&&e.client&&e.data&&e.data.name)NAMES[e.client]=e.data.name});
+['maitika-bookings-v1','petit-bonheur-bookings-v1'].forEach(k=>{try{JSON.parse(localStorage.getItem(k)||'[]').forEach(r=>{if(r[7]&&r[7].name&&r[5]!=null)NAMES[String(r[5])]=r[7].name})}catch(e){}});
+const who_=e=>e.client?(NAMES[e.client]?'<span class="who">'+NAMES[e.client]+'</span> <small style="color:var(--mut)">(client '+e.client+')</small>':'Client '+e.client):'Guillaume / Julien';
+function sentence(e){const d=e.data||{},who=who_(e),b=boatOf(e),per=d.start?'du '+fd(d.start)+' au '+fd(d.end):'';
+  switch(e.kind){
+    case 'visit':return `${who} ouvre ${PAGE[d.page||e.page]||d.page||e.page}${d.ref&&d.ref!=='direct'?' (depuis '+d.ref+')':''}`;
+    case 'client_switch':return `Le testeur devient le client ${d.client}`;
+    case 'hold_created':return `${who} valide la période ${per} sur ${b} pour ${eur(d.total||0)} · en attente de l’acompte${d.expiresInMin?' ('+d.expiresInMin+' min)':''}`;
+    case 'paid':return `${who} règle l’acompte de ${eur(d.deposit||0)} (séjour ${per}, ${eur(d.total||0)}) sur ${b}${d.name?' · '+d.name:''}${d.email?' · '+d.email:''}`;
+    case 'confirmed_test':return `${who} confirme sans payer (test) le séjour ${per} sur ${b}`;
+    case 'hold_withdrawn':return `${who} retire sa période ${per} sur ${b} (non payée, sans frais)`;
+    case 'hold_expired':return `Le système libère la période ${per} sur ${b} du client ${d.client} : acompte non reçu dans le délai`;
+    case 'cancelled':return `${who} annule le séjour ${per} sur ${b} à ${d.daysBefore} jours du départ · ${d.fee?eur(d.fee)+' retenus ('+d.pct+' %)':'sans frais'}`;
+    case 'conflict_refused':return `Le système refuse à ${who} la période ${per} sur ${b} : dates prises entre-temps par un autre client`;
+    case 'params_saved':return `Réglages enregistrés (${Object.keys(d).length} paramètres)`;
+    case 'params_reset':return `Réglages rétablis aux valeurs par défaut`;
+    case 'convoy_marked':return `Convoyage marqué le ${d.day}`;
+    case 'convoy_unmarked':return `Convoyage retiré le ${d.day}`;
+    case 'reset_bookings':return `Toutes les réservations de test effacées`;
+    case 'audit_purged':return `Journal effacé après téléchargement (${d.events} événements archivés)`;
+    case 'cancellations_cleared':return `Liste des annulations effacée (${d.count})`;
+    case 'contract_opened':return `${who} ouvre le contrat du séjour ${per} sur ${b}`;
+    default:return (LBL[e.kind]||e.kind)+' · '+JSON.stringify(d)}}
+/* filtres */
+const sel=(id)=>document.getElementById(id);const clients=[...new Set(L.map(e=>e.client).filter(Boolean))].sort((a,b)=>+a-+b);clients.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=(NAMES[c]?NAMES[c]+' · ':'')+'client '+c;sel('fClient').appendChild(o)});
+[...new Set(L.map(e=>e.kind))].forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=LBL[k]||k;sel('fKind').appendChild(o)});
+function filtered(){const c=sel('fClient').value,k=sel('fKind').value,b=sel('fBoat').value,t=sel('fText').value.toLowerCase();return L.filter(e=>(!c||e.client===c)&&(!k||e.kind===k)&&(!b||boatOf(e).toLowerCase().replace(/[^a-z]/g,'').startsWith(b.replace(/[^a-z]/g,'')))&&(!t||(sentence(e)+' '+e.t+' '+JSON.stringify(e.data)).toLowerCase().includes(t)))}
+function render(){const F=filtered();const list=document.getElementById('list');if(!F.length){list.innerHTML='<div class="empty">Aucun événement'+(L.length?' pour ces filtres':' enregistré pour l’instant')+'.</div>'}else{let cur='',h='';F.slice().reverse().forEach(e=>{const d=new Date(e.t),day=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});if(day!==cur){cur=day;h+='<div class="day">'+day+'</div>'}
+    h+='<div class="ev k-'+e.kind+'"><time>'+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+'</time><span class="ic">'+(ICON[e.kind]||'•')+'</span><div class="txt">'+sentence(e)+'<small class="det">'+(LBL[e.kind]||e.kind)+' · '+e.page+(e.ua?' · '+e.ua:'')+'</small></div></div>'});list.innerHTML=h}
+  const n=L.length,c=clients.length,paid=L.filter(e=>e.kind==='paid').length,canc=L.filter(e=>e.kind==='cancelled').length,v=L.filter(e=>e.kind==='visit').length;
+  document.getElementById('kp').innerHTML=[['Événements',n],['Affichés',F.length],['Clients distincts',c],['Accès aux pages',v],['Paiements',paid],['Annulations',canc]].map(([l,x])=>'<div class="kpi"><small>'+l+'</small><b>'+x+'</b></div>').join('')}
+['fClient','fKind','fBoat'].forEach(id=>sel(id).onchange=render);sel('fText').oninput=render;render();
+/* exports */
+const dl=(name,txt,type)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click()};const stamp=()=>new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+const csv=()=>'\ufeff'+[['Horodatage','Action','Client','Nom','Bateau','Description','Page','Navigateur','Données']].concat(L.map(e=>[e.t,LBL[e.kind]||e.kind,e.client,NAMES[e.client]||'',boatOf(e),sentence(e).replace(/<[^>]+>/g,''),e.page,e.ua,JSON.stringify(e.data)])).map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(';')).join('\n');
+sel('csv').onclick=()=>dl('journal-escapades-'+stamp()+'.csv',csv(),'text/csv;charset=utf-8');sel('json').onclick=()=>dl('journal-escapades-'+stamp()+'.json',JSON.stringify(L,null,1),'application/json');sel('print').onclick=()=>window.print();
+sel('purgeNow').onclick=()=>{if(!L.length)return;if(!confirm('Effacer le journal ('+L.length+' événements) sans le télécharger ? Cette action est irréversible ; une ligne « journal effacé » ouvrira le nouveau journal.'))return;const n=L.length;localStorage.setItem(K,'[]');window.audit('audit_purged',{events:n,downloaded:false});location.reload()};
+sel('purge').onclick=()=>{if(!L.length)return;dl('journal-escapades-'+stamp()+'.json',JSON.stringify(L,null,1),'application/json');dl('journal-escapades-'+stamp()+'.csv',csv(),'text/csv;charset=utf-8');setTimeout(()=>{if(confirm('Le journal a été téléchargé (JSON et CSV). Confirmez-vous son effacement ? Une ligne « journal effacé » ouvrira le nouveau journal.')){const n=L.length;localStorage.setItem(K,'[]');window.audit('audit_purged',{events:n});location.reload()}},400)};
+})();</script></body></html>

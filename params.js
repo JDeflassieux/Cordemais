@@ -82,3 +82,6 @@ window.audit = function(kind, data){ try{ const L = JSON.parse(localStorage.getI
 window.purgeExpired = function(key, list){ const P = window.loadParams(), ms = (P.HOLD_MINUTES||30)*60000, now = Date.now(); let changed=false;
   const kept = list.filter(x => { if(x[3]==='pending' && x[8] && now - x[8] > ms){ changed=true; window.audit('hold_expired', {key, start:x[0], end:x[1], id:x[4], client:x[5]}); return false; } return true; });
   if(changed){ try{ localStorage.setItem(key, JSON.stringify(kept)); }catch(e){} } return kept; };
+
+/* Accès aux pages : une entrée par page et par session de navigation (pas à chaque rechargement) */
+try{ const pg=(location.pathname.split('/').pop()||'index.html'); const k='visited-'+pg; if(!sessionStorage.getItem(k)){ sessionStorage.setItem(k,'1'); window.audit('visit',{page:pg, ref:(document.referrer||'').split('/').pop()||'direct'}); } }catch(e){}
