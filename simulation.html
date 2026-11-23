@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simulation de revenus · Escapades Atlantique</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Simulation de revenus · Escapades Atlantique</title>
 <script src="params.js"></script>
 <style>
 *{box-sizing:border-box}:root{--bg:#07131c;--bg2:#0b1d29;--bg3:#102736;--line:#1d3645;--tx:#e6eef1;--mut:#9fb3bb;--teal:#19a39b;--cor:#e86f51;--gold:#ffd166;--blue:#4da3ff}
@@ -22,7 +22,21 @@ table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:8px}th,td{
 .eq{margin-top:10px;font-size:1rem;color:var(--tx)}.eq b{color:var(--teal)}
 .note{font-size:.8rem;color:var(--mut);margin-top:8px}
 @media(max-width:760px){.sliders{grid-template-columns:1fr}}
-.d b.sp{background:linear-gradient(90deg,var(--c1) 0 46%,#fff 46% 54%,var(--c2) 54%)}.d b.m.sp{--c1:#0e6b78;--c2:var(--teal)}.d b.p.sp{--c1:#a84a30;--c2:var(--cor)}.d.r:after{content:"";position:absolute;inset:0;border:2px solid #ff4d4d;border-radius:50%;z-index:3;pointer-events:none}.d.gn:before{content:"";position:absolute;top:3px;left:3px;width:6px;height:6px;border-radius:50%;background:#ff4d4d;z-index:4}.navLogo{display:flex;align-items:center;margin-right:6px}.navLogo img{height:34px;width:auto;filter:drop-shadow(0 2px 6px #0008)}@media(max-width:760px){.navLogo img{height:28px}}</style></head><body>
+.d b.sp{background:linear-gradient(90deg,var(--c1) 0 46%,#fff 46% 54%,var(--c2) 54%)}.d b.m.sp{--c1:#0e6b78;--c2:var(--teal)}.d b.p.sp{--c1:#a84a30;--c2:var(--cor)}.d.r:after{content:"";position:absolute;inset:0;border:2px solid #ff4d4d;border-radius:50%;z-index:3;pointer-events:none}.d.gn:before{content:"";position:absolute;top:3px;left:3px;width:6px;height:6px;border-radius:50%;background:#ff4d4d;z-index:4}.navLogo{display:flex;align-items:center;margin-right:6px}.navLogo img{height:34px;width:auto;filter:drop-shadow(0 2px 6px #0008)}@media(max-width:760px){.navLogo img{height:28px}}
+/* ---- iPhone / Safari iOS ---- */
+html,body{overflow-x:hidden;max-width:100%}
+nav{padding-top:calc(12px + env(safe-area-inset-top,0px))!important}
+body{padding-top:calc(62px + env(safe-area-inset-top,0px))}
+.wrap,main,footer,.saved,#dates .calendar{padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+.fab,.cancelFloat,.backToMap,.floatBtn,#toMap{bottom:calc(24px + env(safe-area-inset-bottom,0px))!important}
+.addPanel{bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+img,svg,video{max-width:100%;height:auto}
+@media(max-width:760px){input,select,textarea,button{font-size:16px!important}.tipbox{max-width:calc(100vw - 16px)}
+  .tb,.tw,table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+  .chips,.chipsD,.cpol,.sched,.legend,.tools,.tools-links{flex-wrap:wrap!important;max-width:100%}
+  .live,.explain,.calHead{max-width:100vw}.months{grid-template-columns:1fr!important}
+  pre,code{white-space:pre-wrap;word-break:break-word}}
+</style></head><body>
 <nav><a href="index.html" class="navLogo" aria-label="Escapades Atlantique"><img src="logo-escapade-embleme.png" alt=""></a><a href="reservations.html">← Planning</a><div><a href="#" style="color:#7fd6cf">Simulation</a><a href="journal.html">Journal</a></div></nav>
 <div class="wrap">
 <div class="ey">Bac à sable · n’influence pas le site</div><h1>Simulation de revenus</h1>

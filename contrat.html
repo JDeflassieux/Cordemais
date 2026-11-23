@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Contrat de location · Escapades Atlantique</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Contrat de location · Escapades Atlantique</title>
 <script src="params.js"></script><script>if(!window.PARAMS){document.addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#e86f51;color:#fff;padding:12px 16px;font:700 15px system-ui;text-align:center';b.textContent='Fichier params.js introuvable à côté de cette page.';document.body.appendChild(b)})}</script>
 <style>
 *{box-sizing:border-box}:root{--bg:#07131c;--bg2:#0b1d29;--bg3:#102736;--line:#1d3645;--tx:#e6eef1;--mut:#9fb3bb;--teal:#19a39b;--gold:#ffd166;--cor:#e86f51}
@@ -18,7 +18,21 @@ table{width:100%;border-collapse:collapse;font-size:.9rem;margin:6px 0;backgroun
 .missing{color:#ff8666;font-weight:700}.noprint{color:var(--mut)!important}.small{font-size:.84rem;color:var(--mut)}
 @media print{body{background:var(--bg)!important;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}nav,.tools,.noprint{display:none!important}.sheet{box-shadow:none;margin:0;max-width:none;border-radius:0;border:0;padding:10mm 12mm;background:var(--bg2)!important}@page{size:A4;margin:0}.sig div{height:110px}}
 @media(max-width:700px){.sheet{padding:22px 16px}.two,.sig{grid-template-columns:1fr}}
-.navLogo{display:flex;align-items:center;margin-right:6px}.navLogo img{height:34px;width:auto;filter:drop-shadow(0 2px 6px #0008)}@media(max-width:760px){.navLogo img{height:28px}}.headLogo{height:84px;width:auto;flex:none;filter:drop-shadow(0 4px 12px #0008)}@media print{.headLogo{height:22mm}}.ed{display:inline-block;min-width:60px;border-bottom:1px dashed #19a39b88;padding:0 3px;outline:none}.ed:focus{background:#0c2130;border-bottom-color:#ffd166}@media print{.ed{border:0!important;background:transparent!important}.missing{display:none}}</style></head><body>
+.navLogo{display:flex;align-items:center;margin-right:6px}.navLogo img{height:34px;width:auto;filter:drop-shadow(0 2px 6px #0008)}@media(max-width:760px){.navLogo img{height:28px}}.headLogo{height:84px;width:auto;flex:none;filter:drop-shadow(0 4px 12px #0008)}@media print{.headLogo{height:22mm}}.ed{display:inline-block;min-width:60px;border-bottom:1px dashed #19a39b88;padding:0 3px;outline:none}.ed:focus{background:#0c2130;border-bottom-color:#ffd166}@media print{.ed{border:0!important;background:transparent!important}.missing{display:none}}
+/* ---- iPhone / Safari iOS ---- */
+html,body{overflow-x:hidden;max-width:100%}
+nav{padding-top:calc(12px + env(safe-area-inset-top,0px))!important}
+body{padding-top:calc(62px + env(safe-area-inset-top,0px))}
+.wrap,main,footer,.saved,#dates .calendar{padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+.fab,.cancelFloat,.backToMap,.floatBtn,#toMap{bottom:calc(24px + env(safe-area-inset-bottom,0px))!important}
+.addPanel{bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+img,svg,video{max-width:100%;height:auto}
+@media(max-width:760px){input,select,textarea,button{font-size:16px!important}.tipbox{max-width:calc(100vw - 16px)}
+  .tb,.tw,table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+  .chips,.chipsD,.cpol,.sched,.legend,.tools,.tools-links{flex-wrap:wrap!important;max-width:100%}
+  .live,.explain,.calHead{max-width:100vw}.months{grid-template-columns:1fr!important}
+  pre,code{white-space:pre-wrap;word-break:break-word}}
+</style></head><body>
 <nav><a href="index.html" class="navLogo" aria-label="Escapades Atlantique"><img src="logo-escapade-embleme.png" alt=""></a><a href="index.html">← Escapades Atlantique</a><div class="tools"><button class="btn" onclick="window.print()">🖨 Imprimer / Enregistrer en PDF</button><a class="btn ghost" id="backLink" href="dehler.html#dates">Retour à ma réservation</a></div></nav>
 <div class="sheet" id="sheet"><p class="noprint" style="font-size:.85rem;margin:0 0 10px">Ce contrat est généré à partir de votre réservation. Imprimez-le ou enregistrez-le en PDF (bouton en haut), signez-le et remettez-le signé au plus tard à la remise des clés.</p><div id="body"></div></div>
 <script>(()=>{
@@ -28,7 +42,7 @@ const eur=v=>Math.round(v).toLocaleString('fr-FR')+' €';const isM=key.startsWi
 const BOAT=isM?{name:'Maïtika',model:'Dehler Optima 98 AK (1979)',len:'9,80 m × 3,00 m · tirant d’eau 1,60 m',motor:'Volvo Penta MD11C 23 ch, saildrive',cap:'9 personnes',page:'dehler.html'}:{name:'Petit Bonheur',model:'Voilier de 8 m (caractéristiques à compléter)',len:'8 m',motor:'à compléter',cap:'à compléter',page:'petit-bonheur.html'};
 document.getElementById('backLink').href=BOAT.page+'#dates';
 let L=[];try{L=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){}let r=id?L.find(x=>x[4]===id):null;if(!r){let mine=[];try{const C=String(localStorage.getItem('sim-client')||'1');mine=L.filter(x=>String(x[5])===C&&x[3]==='paid')}catch(e){}r=mine[mine.length-1]}
-const B=document.getElementById('body');
+const B=document.getElementById('body');if(window.audit&&r)window.audit('contract_opened',{key,id:r[4],start:r[0],end:r[1],client:r[5]});
 if(!r){B.innerHTML='<h2>Aucune réservation confirmée trouvée</h2><p>Le contrat se génère pour un séjour dont l’acompte a été payé. Revenez au calendrier, validez vos dates et réglez l’acompte.</p>';return}
 let cl=r[7]||{};if(!cl.name){try{const A=JSON.parse(localStorage.getItem('audit-log')||'[]').filter(e=>e.kind==='paid'&&e.data&&e.data.id===r[4]).pop();if(A)cl={name:A.data.name||'',email:A.data.email||'',phone:'',exp:'',paidAt:A.t.slice(0,10)}}catch(e){}}
 let ED={};try{ED=JSON.parse(localStorage.getItem('contract-edits-'+r[4])||'{}')}catch(e){}

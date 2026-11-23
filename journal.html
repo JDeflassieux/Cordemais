@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><link rel="icon" type="image/png" href="favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Journal de bord · Escapades Atlantique</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><link rel="icon" type="image/png" href="favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Journal de bord · Escapades Atlantique</title>
 <script src="params.js"></script>
 <style>
 *{box-sizing:border-box}:root{--bg:#07131c;--bg2:#0b1d29;--bg3:#102736;--line:#1d3645;--tx:#e6eef1;--mut:#9fb3bb;--teal:#19a39b;--cor:#e86f51;--gold:#ffd166}
@@ -12,6 +12,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;background:#07131cf0;padding:
 .ev.k-paid,.ev.k-confirmed_test{border-left-color:#3ddc84}.ev.k-cancelled,.ev.k-hold_withdrawn,.ev.k-hold_expired,.ev.k-conflict_refused{border-left-color:#ff5a4a}.ev.k-hold_created{border-left-color:var(--gold)}.ev.k-visit,.ev.k-client_switch{border-left-color:#4da3ff}.ev.k-params_saved,.ev.k-params_reset,.ev.k-convoy_marked,.ev.k-convoy_unmarked{border-left-color:#c084fc}
 .empty{color:var(--mut);padding:30px;text-align:center;border:1px dashed var(--line);border-radius:14px}
 @media print{nav,.tools{display:none}body{background:#fff;color:#000}.day{position:static;color:#000}}
+
+/* ---- iPhone / Safari iOS ---- */
+html,body{overflow-x:hidden;max-width:100%}
+nav{padding-top:calc(12px + env(safe-area-inset-top,0px))!important}
+body{padding-top:calc(62px + env(safe-area-inset-top,0px))}
+.wrap,main,footer,.saved,#dates .calendar{padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+.fab,.cancelFloat,.backToMap,.floatBtn,#toMap{bottom:calc(24px + env(safe-area-inset-bottom,0px))!important}
+.addPanel{bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+img,svg,video{max-width:100%;height:auto}
+@media(max-width:760px){input,select,textarea,button{font-size:16px!important}.tipbox{max-width:calc(100vw - 16px)}
+  .tb,.tw,table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+  .chips,.chipsD,.cpol,.sched,.legend,.tools,.tools-links{flex-wrap:wrap!important;max-width:100%}
+  .live,.explain,.calHead{max-width:100vw}.months{grid-template-columns:1fr!important}
+  pre,code{white-space:pre-wrap;word-break:break-word}}
 </style></head><body>
 <nav><a href="index.html" class="navLogo"><img src="logo-escapade-embleme.png" alt=""></a><a href="reservations.html">← Planning</a><div style="display:flex;gap:16px"><a href="regles.html">Règles & tarifs</a><a href="simulation.html">Simulation</a><a href="journal.html" style="color:#7fd6cf">Journal</a></div></nav>
 <div class="wrap">
